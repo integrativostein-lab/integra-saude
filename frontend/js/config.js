@@ -1,5 +1,5 @@
 const CONFIG = {
-  API_URL: 'http://localhost:3000/api',
+API_URL: 'https://integra-backend-ynrd.onrender.com/api',
   FRONTEND_URL: 'http://localhost:5500',
   NOME_SISTEMA: 'Integra',
   VERSAO: '1.0.0',
