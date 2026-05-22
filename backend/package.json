@@ -27,5 +27,8 @@
   },
   "keywords": ["saude", "integrativa", "terapeutas"],
   "author": "Integra",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+  "node": "22.x"
+}
 }
