@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Integra — Sistema completo para terapeutas e clínicas integrativas. Agendamento online, teleconsultas ilimitadas, loja virtual, emissão de notas fiscais, WhatsApp integrado e muito mais. Planos a partir de R$ 54,90/mês.">
+    <title>Integra — Planos para Profissionais e Clínicas</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <style>
+        .cards-planos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
+        .card-plano {
+            background: var(--branco);
+            border-radius: var(--raio-borda);
+            padding: 28px 22px;
+            text-align: center;
+            box-shadow: var(--sombra);
+            border: 2px solid #E2E8F0;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-plano:hover { transform: translateY(-3px); box-shadow: var(--sombra-hover); }
+        .card-plano.destaque { border-color: var(--laranja); border-width: 3px; }
+        .card-plano h3 { font-size: 20px; color: var(--azul-escuro); margin-bottom: 4px; }
+        .card-plano .terapeutas { font-size: 13px; color: var(--laranja); font-weight: 600; margin-bottom: 14px; }
+        .card-plano .lista { text-align: left; font-size: 13px; line-height: 2.0; margin: 16px 0; flex: 1; color: var(--texto-medio); }
+        .card-plano .preco-mensal { font-size: 30px; font-weight: 700; color: var(--azul-escuro); margin: 10px 0 2px; }
+        .card-plano .preco-anual { font-size: 14px; color: var(--texto-medio); font-weight: 600; }
+        .card-plano .bonus { font-size: 12px; color: var(--verde-suave); font-weight: 600; margin: 6px 0; }
+        .card-plano .btn { width: 100%; margin-top: 10px; }
+
+        .destaque-box {
+            background: var(--laranja-claro);
+            border: 2px solid var(--laranja);
+            border-radius: var(--raio-borda);
+            padding: 16px 24px;
+            text-align: center;
+            margin-top: 28px;
+            font-weight: 600;
+            color: var(--azul-escuro);
+        }
+
+        .carrossel { overflow: hidden; position: relative; margin-top: 10px; }
+        .carrossel-track { display: flex; transition: transform 0.5s ease; }
+        .carrossel-slide { min-width: 100%; text-align: center; }
+        .carrossel-slide img { width: 100%; max-width: 1100px; border-radius: var(--raio-borda); object-fit: cover; height: 340px; }
+        .carrossel-slide .legenda { margin-top: 10px; font-weight: 600; color: var(--azul-escuro); font-size: 16px; }
+        .carrossel-btn {
+            position: absolute; top: 45%; transform: translateY(-50%);
+            background: var(--branco); border: none; border-radius: 50%; width: 40px; height: 40px;
+            font-size: 20px; cursor: pointer; box-shadow: var(--sombra); z-index: 2;
+            color: var(--azul-escuro);
+        }
+        .carrossel-btn:hover { background: var(--cinza-claro); }
+        .carrossel-btn.left { left: 10px; }
+        .carrossel-btn.right { right: 10px; }
+
+        .fechamento { text-align: center; }
+        .fechamento ul { list-style: none; padding: 0; margin: 20px 0; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        .fechamento ul li { font-size: 14px; color: var(--texto-medio); }
+        .fechamento ul li::before { content: "✅ "; }
+
+        .tooltip { position: relative; cursor: help; }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 200px; background: var(--azul-escuro); color: var(--branco);
+            text-align: center; border-radius: 6px; padding: 8px; position: absolute;
+            z-index: 1; bottom: 125%; left: 50%; margin-left: -100px;
+            font-size: 11px; font-weight: 400;
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; }
+
+        @media (max-width: 768px) {
+            .cards-planos { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🌿 Integra<span>.</span></div>
+        <div class="menu">
+            <a href="index.html">Para Pacientes</a>
+            <a href="#planos">Planos</a>
+            <a href="cadastro.html" class="btn btn-primario" style="padding:8px 20px;font-size:13px;">Teste Grátis</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>O sistema de gestão mais completo<br>para a saúde integrativa brasileira</h1>
+        <p>Agende consultas, emita notas fiscais, faça teleconsultas ilimitadas, venda produtos na sua loja virtual e física, e conecte-se com seus pacientes — tudo em um único lugar.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+            <a href="#planos" class="btn btn-primario" style="font-size:15px;padding:14px 30px;">Ver Planos</a>
+            <a href="cadastro.html" class="btn btn-secundario" style="font-size:15px;padding:14px 30px;">Teste Grátis</a>
+        </div>
+    </section>
+
+    <section class="secao secao-branca">
+        <div class="container">
+            <h2>Por que o Integra?</h2>
+            <p class="subtitulo">Ferramentas essenciais para profissionalizar sua prática integrativa.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">🧾</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Emissão de Notas Fiscais</h4><p style="color:var(--texto-medio);font-size:13px;">Emita NFS-e automaticamente para seus pacientes.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">🛒</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Loja Virtual e Física</h4><p style="color:var(--texto-medio);font-size:13px;">Venda produtos, cursos e digitais com estoque unificado.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">📱</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Lembretes via WhatsApp</h4><p style="color:var(--texto-medio);font-size:13px;">Reduza faltas com mensagens automáticas.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">📊</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Gestão Financeira</h4><p style="color:var(--texto-medio);font-size:13px;">Dashboard com receitas, repasses e relatórios.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">🎥</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Teleconsultas Ilimitadas</h4><p style="color:var(--texto-medio);font-size:13px;">Atenda online com transmissão gratuita e segura.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">📋</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Anamneses Personalizáveis</h4><p style="color:var(--texto-medio);font-size:13px;">Formulários customizáveis por especialidade.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">📚</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Bibliotecas Terapêuticas</h4><p style="color:var(--texto-medio);font-size:13px;">Bancos com fitoterápicos, Ayurveda, MTC e mais.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">💳</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Pagamento Online</h4><p style="color:var(--texto-medio);font-size:13px;">Aceite PIX e cartão via PagSeguro e PagBank.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">👥</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Agendamento pelo Paciente</h4><p style="color:var(--texto-medio);font-size:13px;">Seus pacientes agendam, cancelam e reagendam.</p></div></div>
+                <div style="display:flex;gap:14px;align-items:flex-start;"><div style="font-size:24px;">📝</div><div><h4 style="color:var(--azul-escuro);margin-bottom:4px;">Prescrições e Recomendações</h4><p style="color:var(--texto-medio);font-size:13px;">Emita prescrições ou solicitações conforme sua habilitação.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="secao secao-azul" id="planos">
+        <div class="container">
+            <h2>Planos</h2>
+            <p class="subtitulo">Escolha o plano ideal para o seu momento</p>
+            <div class="cards-planos">
+                
+                <div class="card-plano">
+                    <h3>🆓 Freemium</h3>
+                    <div class="terapeutas">👤 1 Terapeuta</div>
+                    <div class="lista">
+                        <span class="tooltip">📅 Agenda<span class="tooltiptext">Calendário com agendamento online</span></span><br>
+                        <span class="tooltip">🎥 Teleconsultas<span class="tooltiptext">Ilimitadas e gratuitas</span></span><br>
+                        <span class="tooltip">💳 Pagamento Online<span class="tooltiptext">PagSeguro e PagBank</span></span><br>
+                        <span class="tooltip">👥 50 pacientes<span class="tooltiptext">Limite de cadastros</span></span>
+                    </div>
+                    <div class="preco-mensal">Grátis</div>
+                    <a href="#" class="btn btn-outline" style="width:100%;">Começar</a>
+                </div>
+
+                <div class="card-plano destaque">
+                    <h3>⭐ Pro</h3>
+                    <div class="terapeutas">👤 1 Terapeuta</div>
+                    <div class="lista">
+                        ✅ Tudo do Freemium<br>
+                        <span class="tooltip">+ 📱 WhatsApp<span class="tooltiptext">Lembretes automáticos</span></span><br>
+                        <span class="tooltip">+ 🛒 Loja Virtual/Física<span class="tooltiptext">Venda produtos e cursos</span></span><br>
+                        <span class="tooltip">+ 🧾 Nota Fiscal<span class="tooltiptext">Emissão de NFS-e integrada</span></span><br>
+                        <span class="tooltip">+ 📊 Relatórios<span class="tooltiptext">Dashboard com gráficos</span></span><br>
+                        <span class="tooltip">+ 🛎️ Painel de Recepção<span class="tooltiptext">Check-in de pacientes e gestão de caixa</span></span><br>
+                        <span class="tooltip">+ 👥 300 pacientes<span class="tooltiptext">Limite de cadastros</span></span>
+                    </div>
+                    <div class="preco-mensal">R$ 54,90<span style="font-size:14px;">/mês</span></div>
+                    <div class="preco-anual">Plano Anual: R$ 549</div>
+                    <div class="bonus">💚 2 meses grátis</div>
+                    <a href="#" class="btn btn-primario" style="width:100%;">Assinar</a>
+                </div>
+
+                <div class="card-plano">
+                    <h3>💎 Premium</h3>
+                    <div class="terapeutas">👥 Até 5 Terapeutas</div>
+                    <div class="lista">
+                        ✅ Tudo do Pro<br>
+                        <span class="tooltip">+ 👥 5 Terapeutas<span class="tooltiptext">Profissionais vinculados</span></span><br>
+                        <span class="tooltip">+ 👥 1.000 pacientes<span class="tooltiptext">Limite de cadastros</span></span><br>
+                        <span class="tooltip">+ 📊 Relatórios Avançados<span class="tooltiptext">Por profissional</span></span><br>
+                    </div>
+                    <div class="preco-mensal">R$ 164,90<span style="font-size:14px;">/mês</span></div>
+                    <div class="preco-anual">Plano Anual: R$ 1.649</div>
+                    <div class="bonus">💚 2 meses grátis</div>
+                    <a href="#" class="btn btn-primario" style="width:100%;">Assinar</a>
+                </div>
+
+                <div class="card-plano">
+                    <h3>🏢 Enterprise</h3>
+                    <div class="terapeutas">👥 Ilimitado (Clínicas)</div>
+                    <div class="lista">
+                        ✅ Tudo do Premium<br>
+                        <span class="tooltip">+ 👥 Terapeutas Ilimitados<span class="tooltiptext">Sem limite de profissionais</span></span><br>
+                        <span class="tooltip">+ 👥 Pacientes Ilimitados<span class="tooltiptext">Sem limite de cadastros</span></span><br>
+                    </div>
+                    <div class="preco-mensal">R$ 384,90<span style="font-size:14px;">/mês</span></div>
+                    <div class="preco-anual">Plano Anual: R$ 3.849</div>
+                    <div class="bonus">💚 2 meses grátis</div>
+                    <a href="#" class="btn btn-primario" style="width:100%;">Assinar</a>
+                </div>
+
+            </div>
+            <div class="destaque-box">
+                💚 Nos planos anuais, você paga o equivalente a 10 mensalidades e recebe 12 meses de acesso. Parcelamento em até 4x sem juros.
+            </div>
+        </div>
+    </section>
+
+    <section class="secao secao-branca">
+        <div class="container">
+            <h2>Profissionais que confiam no Integra</h2>
+            <div class="carrossel" id="carrossel">
+                <button class="carrossel-btn left" onclick="moverCarrossel(-1)">‹</button>
+                <div class="carrossel-track" id="carrosselTrack">
+                    <div class="carrossel-slide"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1000&h=400&fit=crop" alt="Yoga"><div class="legenda">Instrutora de Yoga</div></div>
+                    <div class="carrossel-slide"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1000&h=400&fit=crop" alt="Massoterapia"><div class="legenda">Massoterapeuta</div></div>
+                    <div class="carrossel-slide"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1000&h=400&fit=crop" alt="Fisioterapia"><div class="legenda">Fisioterapeuta</div></div>
+                    <div class="carrossel-slide"><img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1000&h=400&fit=crop" alt="Acupuntura"><div class="legenda">Especialista em Acupuntura</div></div>
+                    <div class="carrossel-slide"><img src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=1000&h=400&fit=crop" alt="Fitoterapia"><div class="legenda">Fitoterapeuta</div></div>
+                </div>
+                <button class="carrossel-btn right" onclick="moverCarrossel(1)">›</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="secao seca-cinza fechamento">
+        <div class="container">
+            <h2>Comece agora, sem risco</h2>
+            <p class="subtitulo">Você tem 10 dias para testar o Integra. Se não gostar, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.</p>
+            <ul>
+                <li>10 dias de garantia</li>
+                <li>Sem renovação automática</li>
+                <li>Cancele quando quiser</li>
+            </ul>
+            <a href="#" class="btn btn-primario" style="font-size:16px;padding:16px 36px;">Testar Grátis por 10 Dias</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>🌿 Integra — Saúde Integrativa &copy; 2026</p>
+        <p style="margin-top:8px;font-size:12px;">
+            <a href="termos.html">Termos de Uso</a> &nbsp;|&nbsp;
+            <a href="privacidade.html">Política de Privacidade</a> &nbsp;|&nbsp;
+            <a href="manual.html">Manual de Uso</a>
+        </p>
+    </footer>
+
+    <script>
+        let slideAtual = 0;
+        function moverCarrossel(dir) {
+            const track = document.getElementById('carrosselTrack');
+            const slides = track.children;
+            slideAtual = Math.max(0, Math.min(slideAtual + dir, slides.length - 1));
+            track.style.transform = `translateX(-${slideAtual * 100}%)`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Integra</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    .form-login { max-width: 420px; margin: 60px auto; background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); }
+    .form-login h2 { text-align: center; margin-bottom: 24px; }
+    .msg { padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+    .msg.sucesso { background: #C6F6D5; color: #22543D; }
+    .msg.erro { background: #FED7D7; color: #9B2C2C; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="menu"><a href="index.html">Início</a></div>
+  </nav>
+
+  <div class="form-login">
+    <h2>Entrar</h2>
+    <div id="msg" class="msg" style="display:none;"></div>
+    
+    <div class="form-grupo">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="admin@integra.com" required>
+    </div>
+    <div class="form-grupo">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="admin123" required>
+    </div>
+
+    <button class="btn btn-primario" onclick="login()" style="width:100%;margin-top:10px;">Entrar</button>
+    <p style="text-align:center;margin-top:16px;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+  </div>
+
+  <script>
+    var API = 'http://localhost:3000/api';
+
+    async function login() {
+      var msg = document.getElementById('msg');
+      msg.style.display = 'block';
+      msg.className = 'msg';
+      msg.textContent = 'Entrando...';
+
+      var email = document.getElementById('email').value.trim();
+      var senha = document.getElementById('senha').value.trim();
+
+      if (!email || !senha) {
+        msg.className = 'msg erro';
+        msg.textContent = 'Preencha email e senha.';
+        return;
+      }
+
+      try {
+        var r = await fetch(API + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, senha: senha })
+        });
+        var d = await r.json();
+
+        if (r.ok) {
+          localStorage.setItem('integra_token', d.token);
+          localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
+          msg.className = 'msg sucesso';
+          msg.innerHTML = '✅ Login realizado! <a href="busca.html">Ir para busca</a>';
+        } else {
+          msg.className = 'msg erro';
+          msg.textContent = d.erro || 'Erro ao fazer login.';
+        }
+      } catch(e) {
+        msg.className = 'msg erro';
+        msg.textContent = 'Erro de conexão. O servidor está rodando? (localhost:3000)';
+      }
+    }
+  </script>
+</body>
+</html>

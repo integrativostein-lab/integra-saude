@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - Integra</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    .form-cadastro { max-width: 500px; margin: 40px auto; background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); }
+    .form-cadastro h2 { text-align: center; margin-bottom: 24px; }
+    .msg { padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: none; }
+    .msg.sucesso { background: #C6F6D5; color: #22543D; display: block; }
+    .msg.erro { background: #FED7D7; color: #9B2C2C; display: block; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="menu"><a href="index.html">Início</a></div>
+  </nav>
+
+  <div class="form-cadastro">
+    <h2>Criar Conta</h2>
+    <div id="msg" class="msg"></div>
+    
+    <div class="form-grupo">
+      <label>Nome Completo *</label>
+      <input type="text" id="nome" placeholder="Seu nome completo" required>
+    </div>
+    <div class="form-grupo">
+      <label>Email *</label>
+      <input type="email" id="email" placeholder="seu@email.com" required>
+    </div>
+    <div class="form-grupo">
+      <label>Senha * (mínimo 8 caracteres)</label>
+      <input type="password" id="senha" placeholder="Mínimo 8 caracteres" required>
+    </div>
+    <div class="form-grupo">
+      <label>Tipo de Conta *</label>
+      <select id="tipo">
+        <option value="paciente">Paciente</option>
+        <option value="terapeuta">Terapeuta</option>
+      </select>
+    </div>
+    <div class="form-grupo" id="grupo-especialidades" style="display:none;">
+      <label>Especialidades (separe por vírgulas)</label>
+      <input type="text" id="especialidades" placeholder="Fitoterapia, Ayurveda, MTC">
+    </div>
+
+    <button class="btn btn-primario" onclick="cadastrar()" style="width:100%;margin-top:10px;">Criar Conta</button>
+    <p style="text-align:center;margin-top:16px;font-size:13px;">Já tem conta? <a href="login.html">Faça login</a></p>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    document.getElementById('tipo').addEventListener('change', function() {
+      document.getElementById('grupo-especialidades').style.display = this.value === 'terapeuta' ? 'block' : 'none';
+    });
+
+    async function cadastrar() {
+      const msg = document.getElementById('msg');
+      msg.className = 'msg';
+      msg.textContent = 'Enviando...';
+      msg.style.display = 'block';
+      msg.className = 'msg';
+      msg.style.background = '#EBF4FF';
+      msg.style.color = '#1A365D';
+
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+      const tipo = document.getElementById('tipo').value;
+      const especialidadesRaw = document.getElementById('especialidades').value.trim();
+
+      if (!nome || !email || !senha) {
+        msg.className = 'msg erro';
+        msg.textContent = 'Preencha nome, email e senha.';
+        return;
+      }
+
+      if (senha.length < 8) {
+        msg.className = 'msg erro';
+        msg.textContent = 'A senha deve ter no mínimo 8 caracteres.';
+        return;
+      }
+
+      const body = { 
+        nome: nome, 
+        email: email, 
+        senha: senha, 
+        tipo: tipo, 
+        lgpd_consentimento: 1 
+      };
+
+      if (tipo === 'terapeuta') {
+        body.atende_online = 1;
+        body.atende_presencial = 1;
+        if (especialidadesRaw) {
+          const especs = especialidadesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+          body.especialidades = JSON.stringify(especs);
+        }
+      }
+
+      try {
+        const r = await fetch(`${CONFIG.API_URL}/auth/cadastro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const d = await r.json();
+
+        if (r.ok) {
+          localStorage.setItem('integra_token', d.token);
+          localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
+          msg.className = 'msg sucesso';
+          msg.innerHTML = '✅ Cadastro realizado com sucesso! <a href="busca.html" style="color:#22543D;text-decoration:underline;">Buscar profissionais</a>';
+        } else {
+          msg.className = 'msg erro';
+          msg.textContent = d.erro || 'Erro ao cadastrar. Tente novamente.';
+        }
+      } catch(e) {
+        msg.className = 'msg erro';
+        msg.textContent = 'Erro de conexão. O servidor está rodando?';
+      }
+    }
+  </script>
+</body>
+</html>
