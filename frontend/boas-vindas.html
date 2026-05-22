@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindo ao Integra!</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    .boas-vindas { max-width: 800px; margin: 40px auto; padding: 40px; background: var(--branco); border-radius: var(--raio-borda); box-shadow: var(--sombra); text-align: center; }
+    .boas-vindas h1 { color: var(--azul-escuro); margin-bottom: 8px; }
+    .boas-vindas .funcionalidades { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin: 30px 0; }
+    .boas-vindas .funcionalidades li { list-style: "✅ "; padding: 4px 0; color: var(--texto-medio); font-size: 14px; }
+    .boas-vindas .aviso { background: var(--laranja-claro); padding: 18px; border-radius: 8px; margin: 24px 0; font-size: 15px; border-left: 4px solid var(--laranja); }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="menu"><a href="index.html">Início</a> <a href="login.html">Entrar</a></div>
+  </nav>
+
+  <div class="boas-vindas">
+    <h1>🎉 Bem-vindo ao Integra, <span id="nome-cliente">Terapeuta</span>!</h1>
+    <p style="color:var(--texto-medio);font-size:16px;margin-top:8px;">Sua assinatura foi confirmada com sucesso.</p>
+
+    <p style="margin-top:24px;font-size:17px;color:var(--azul-escuro);font-weight:600;">
+      O Integra é a plataforma mais completa do mercado para terapeutas e clínicas integrativas.
+    </p>
+
+    <h3 style="margin-top:28px;color:var(--azul-escuro);">Com o seu plano, você tem acesso a:</h3>
+    <div class="funcionalidades">
+      <ul>
+        <li>Agenda inteligente com agendamento pelo paciente</li>
+        <li>Teleconsultas ilimitadas</li>
+        <li>Loja virtual e física integradas</li>
+        <li>Emissão de Notas Fiscais</li>
+        <li>Lembretes automáticos via WhatsApp</li>
+      </ul>
+      <ul>
+        <li>Prontuário digital com anamnese personalizável</li>
+        <li>Bancos de dados terapêuticos</li>
+        <li>Módulo de Yoga com presença automática</li>
+        <li>Gestão financeira com relatórios</li>
+        <li>Conformidade total com a LGPD</li>
+      </ul>
+    </div>
+
+    <div class="aviso">
+      <strong>📖 Primeiro acesso?</strong> Recomendamos a leitura do manual para configurar tudo sem dificuldades. Você pode voltar a ele a qualquer momento para tirar dúvidas.
+    </div>
+
+    <a href="manual.html" class="btn btn-primario" style="font-size:16px;padding:16px 36px;">Abrir Manual de Uso</a>
+    <p style="margin-top:16px;"><a href="login.html" style="color:var(--texto-medio);">Ir para o painel</a></p>
+  </div>
+
+  <script>
+    var nome = localStorage.getItem('integra_usuario');
+    if (nome) {
+      try { nome = JSON.parse(nome).nome; } catch(e) {}
+      document.getElementById('nome-cliente').textContent = nome;
+    }
+  </script>
+</body>
+</html>

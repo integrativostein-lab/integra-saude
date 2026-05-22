@@ -32,4 +32,11 @@ router.put('/:id/cancelar', autenticar, (req, res) => {
   res.json({ mensagem: 'Cancelado!' });
 });
 
+router.put('/:id/remarcar', autenticar, (req, res) => {
+  const { data_agendamento, horario_inicio } = req.body;
+  if (!data_agendamento || !horario_inicio) return res.status(400).json({ erro: 'Data e horário obrigatórios' });
+  db.prepare("UPDATE agendamentos SET data_agendamento = ?, horario_inicio = ?, status = 'reagendado', atualizado_em = datetime('now','localtime') WHERE id = ? AND paciente_id = ?").run(data_agendamento, horario_inicio, req.params.id, req.usuario.id);
+  res.json({ mensagem: 'Agendamento remarcado!' });
+});
+
 module.exports = router;

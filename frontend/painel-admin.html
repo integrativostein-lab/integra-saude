@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin - Integra</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <div class="painel">
+    <div class="painel-sidebar">
+      <h3>⚙️ Admin</h3>
+      <nav>
+        <a href="#" class="ativo">📊 Dashboard</a>
+        <a href="#">👥 Usuários</a>
+        <a href="#">📋 Logs</a>
+        <a href="#">💾 Backup</a>
+        <a href="#" onclick="logout()">🚪 Sair</a>
+      </nav>
+    </div>
+    <div class="painel-conteudo">
+      <h2>Painel do Administrador</h2>
+      <p style="color:var(--texto-medio);margin-bottom:24px;">Gestão da clínica.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="card"><h3>Pacientes</h3><p style="font-size:28px;" id="adm-pacientes">-</p></div>
+        <div class="card"><h3>Terapeutas</h3><p style="font-size:28px;" id="adm-terapeutas">-</p></div>
+        <div class="card"><h3>Faturamento</h3><p style="font-size:28px;" id="adm-fat">-</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+    async function carregar() {
+      var token = localStorage.getItem('integra_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      var r = await fetch(`${CONFIG.API_URL}/admin/dashboard`, { headers: { 'Authorization': `Bearer ${token}` } });
+      var d = await r.json();
+      document.getElementById('adm-pacientes').textContent = d.pacientes || 0;
+      document.getElementById('adm-terapeutas').textContent = d.terapeutas || 0;
+      document.getElementById('adm-fat').textContent = 'R$ ' + (d.faturamento_total || 0).toFixed(2);
+    }
+    carregar();
+  </script>
+</body>
+</html>

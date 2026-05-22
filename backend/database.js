@@ -545,7 +545,69 @@ function criarTabelas() {
       FOREIGN KEY (especialidade_id) REFERENCES especialidades(id)
     );
   `);
+  // Tabela: MASSAGEM - PLANOS
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS massagem_planos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      usuario_id INTEGER,
+      nome_plano TEXT NOT NULL,
+      sessoes_por_mes INTEGER,
+      valor_online REAL,
+      valor_presencial REAL,
+      reposicao_dias INTEGER DEFAULT 30,
+      ativo INTEGER DEFAULT 1,
+      FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    );
+  `);
 
+  // Tabela: MASSAGEM - ASSINATURAS
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS massagem_assinaturas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      paciente_id INTEGER,
+      plano_id INTEGER,
+      data_inicio TEXT,
+      data_expiracao TEXT,
+      sessoes_restantes INTEGER,
+      valor_total REAL,
+      tipo_pagamento TEXT DEFAULT 'a_vista',
+      parcelas INTEGER DEFAULT 1,
+      status TEXT DEFAULT 'ativa',
+      FOREIGN KEY (paciente_id) REFERENCES usuarios(id),
+      FOREIGN KEY (plano_id) REFERENCES massagem_planos(id)
+    );
+  `);
+
+  // Tabela: RETORNOS
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS retornos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      paciente_id INTEGER,
+      profissional_id INTEGER,
+      consulta_original_id INTEGER,
+      data_limite TEXT,
+      status TEXT DEFAULT 'pendente' CHECK(status IN ('pendente','agendado','realizado','expirado')),
+      criado_em TEXT DEFAULT (datetime('now','localtime')),
+      FOREIGN KEY (paciente_id) REFERENCES usuarios(id),
+      FOREIGN KEY (profissional_id) REFERENCES usuarios(id),
+      FOREIGN KEY (consulta_original_id) REFERENCES agendamentos(id)
+    );
+  `);
+
+  // Tabela: NOTIFICAÇÕES DE PAGAMENTO
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS notificacoes_pagamento (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      usuario_id INTEGER,
+      assinatura_id INTEGER,
+      tipo_assinatura TEXT CHECK(tipo_assinatura IN ('yoga','massagem','sistema')),
+      dias_antecedencia INTEGER,
+      data_vencimento TEXT,
+      enviada INTEGER DEFAULT 0,
+      criado_em TEXT DEFAULT (datetime('now','localtime')),
+      FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    );
+  `);
   console.log('✅ Todas as tabelas criadas com sucesso!');
 }
 

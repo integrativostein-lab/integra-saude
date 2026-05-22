@@ -13,6 +13,7 @@
       <nav>
         <a href="#" class="ativo">📅 Meus Agendamentos</a>
         <a href="busca.html">🔍 Buscar Profissionais</a>
+        <a href="manual.html">📖 Manual</a>
         <a href="#" onclick="logout()">🚪 Sair</a>
       </nav>
     </div>
@@ -24,36 +25,52 @@
 
   <script src="js/config.js"></script>
   <script>
-    async function carregarAgendamentos() {
-      const token = localStorage.getItem('integra_token');
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    async function carregar() {
+      var token = localStorage.getItem('integra_token');
       if (!token) { window.location.href = 'login.html'; return; }
 
-      const r = await fetch(`${CONFIG.API_URL}/agendamentos/meus`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const dados = await r.json();
+      var r = await fetch(`${CONFIG.API_URL}/agendamentos/meus`, { headers: { 'Authorization': `Bearer ${token}` } });
+      var dados = await r.json();
+      var div = document.getElementById('lista-agendamentos');
 
-      const div = document.getElementById('lista-agendamentos');
       if (dados.length === 0) {
         div.innerHTML = '<p style="color:var(--texto-medio);">Nenhum agendamento encontrado.</p>';
         return;
       }
 
       div.innerHTML = dados.map(a => `
-        <div style="background:var(--branco);padding:18px;border-radius:var(--raio-borda);box-shadow:var(--sombra);margin-bottom:10px;">
-          <strong>${a.data_agendamento}</strong> às ${a.horario_inicio} — ${a.modalidade}<br>
-          <span style="font-size:13px;color:var(--texto-medio);">Profissional: ${a.profissional_nome || 'N/A'} | Status: ${a.status} | Valor: R$ ${a.valor}</span>
+        <div style="background:var(--branco);padding:18px;border-radius:var(--raio-borda);box-shadow:var(--sombra);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <strong>${a.data_agendamento}</strong> às ${a.horario_inicio} — ${a.modalidade}<br>
+            <span style="font-size:13px;color:var(--texto-medio);">Profissional: ${a.profissional_nome || 'N/A'} | Status: ${a.status} | R$ ${a.valor}</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            ${a.status === 'agendado' ? `<button class="btn btn-primario" style="font-size:12px;padding:6px 12px;background:var(--vermelho);" onclick="cancelar(${a.id})">Cancelar</button><button class="btn btn-outline" style="font-size:12px;padding:6px 12px;" onclick="remarcar(${a.id})">Remarcar</button>` : ''}
+          </div>
         </div>
       `).join('');
     }
 
-    function logout() {
-      localStorage.removeItem('integra_token');
-      localStorage.removeItem('integra_usuario');
-      window.location.href = 'index.html';
+    async function cancelar(id) {
+      if (!confirm('Deseja cancelar este agendamento?')) return;
+      var token = localStorage.getItem('integra_token');
+      await fetch(`${CONFIG.API_URL}/agendamentos/${id}/cancelar`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+      carregar();
     }
 
-    carregarAgendamentos();
+    async function remarcar(id) {
+      var novaData = prompt('Nova data (AAAA-MM-DD):');
+      if (!novaData) return;
+      var novoHorario = prompt('Novo horário (HH:MM):');
+      if (!novoHorario) return;
+      var token = localStorage.getItem('integra_token');
+      await fetch(`${CONFIG.API_URL}/agendamentos/${id}/remarcar`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ data_agendamento: novaData, horario_inicio: novoHorario }) });
+      carregar();
+    }
+
+    carregar();
   </script>
 </body>
 </html>

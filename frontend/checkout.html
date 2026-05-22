@@ -62,6 +62,10 @@
     </div>
   </div>
 
+  <footer style="text-align:center;padding:20px;font-size:12px;color:var(--texto-medio);">
+    <a href="manual.html">📖 Manual de Uso</a>
+  </footer>
+
   <script src="js/config.js"></script>
   <script>
     var plano = 'pro';
@@ -98,7 +102,7 @@
         body: JSON.stringify({ codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '', parcelas: p })
       });
       var d = await r.json();
-      if (r.ok) { alert('✅ Assinatura ativada!'); window.location.href = 'painel-terapeuta.html'; }
+      if (r.ok) { alert('✅ Assinatura ativada!'); window.location.href = 'boas-vindas.html'; }
       else { alert('Erro: ' + (d.erro || 'Tente novamente.')); }
     }
   </script>
