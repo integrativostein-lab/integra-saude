@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Integra</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    .checkout-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    .checkout-card { background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); margin-bottom: 20px; }
+    .checkout-card h2 { margin-bottom: 8px; }
+    .resumo { background: var(--cinza-claro); padding: 16px; border-radius: 8px; margin: 16px 0; font-size: 14px; }
+    .resumo span { float: right; font-weight: 600; }
+    .cupom { margin: 16px 0; }
+    .cupom input { padding: 10px; border: 2px solid #E2E8F0; border-radius: 8px; width: 60%; }
+    .cupom button { padding: 10px 16px; background: var(--azul-escuro); color: #FFF; border: none; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a></div>
+  </nav>
+
+  <div class="checkout-container">
+    <div class="checkout-card">
+      <h2>Finalizar Assinatura</h2>
+      <p style="color:var(--texto-medio);">Plano escolhido: <strong id="plano-nome">Pro</strong></p>
+
+      <div class="resumo">
+        <p>Valor mensal: <span id="resumo-mensal">R$ 54,90</span></p>
+        <p>Plano Anual (10x): <span id="resumo-anual">R$ 549,00</span></p>
+        <p style="color:var(--verde-suave);">2 meses grátis!</p>
+      </div>
+
+      <div class="form-grupo">
+        <label>Parcelas (até 4x sem juros)</label>
+        <select id="parcelas" onchange="atualizarResumo()">
+          <option value="1">1x (à vista)</option>
+          <option value="2">2x</option>
+          <option value="3">3x</option>
+          <option value="4">4x</option>
+        </select>
+      </div>
+
+      <div class="cupom">
+        <label>Cupom de desconto</label><br>
+        <input type="text" id="cupom" placeholder="PRESENTEDOMAU">
+        <button onclick="aplicarCupom()">Aplicar</button>
+        <p id="msg-cupom" style="font-size:12px;margin-top:4px;"></p>
+      </div>
+
+      <div class="form-grupo">
+        <label>Forma de Pagamento</label>
+        <select id="forma-pagamento">
+          <option value="pix">PIX</option>
+          <option value="cartao_credito">Cartão de Crédito</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primario" onclick="finalizar()" style="width:100%;margin-top:10px;">Finalizar Pagamento</button>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    var plano = 'pro';
+    var valorAnual = CONFIG.PLANOS[plano].valor_anual;
+
+    function atualizarResumo() {
+      var p = parseInt(document.getElementById('parcelas').value);
+      var valorParcela = (valorAnual / p).toFixed(2);
+      document.getElementById('resumo-anual').textContent = 'R$ ' + valorParcela + ' x ' + p;
+    }
+
+    function aplicarCupom() {
+      var cod = document.getElementById('cupom').value.toUpperCase();
+      var msg = document.getElementById('msg-cupom');
+      if (cod === 'PRESENTEDOMAU') {
+        msg.textContent = '✅ Cupom aplicado! Acesso vitalício.';
+        msg.style.color = 'var(--verde-suave)';
+        document.getElementById('resumo-mensal').textContent = 'R$ 0,00';
+        document.getElementById('resumo-anual').textContent = 'R$ 0,00 (vitalício)';
+      } else {
+        msg.textContent = '❌ Cupom inválido.';
+        msg.style.color = 'var(--vermelho)';
+      }
+    }
+
+    async function finalizar() {
+      var token = localStorage.getItem('integra_token');
+      if (!token) { alert('Faça login primeiro.'); return; }
+      var p = parseInt(document.getElementById('parcelas').value);
+      var cupom = document.getElementById('cupom').value.toUpperCase();
+      var r = await fetch(`${CONFIG.API_URL}/financeiro/renovar-assinatura`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '', parcelas: p })
+      });
+      var d = await r.json();
+      if (r.ok) { alert('✅ Assinatura ativada!'); window.location.href = 'painel-terapeuta.html'; }
+      else { alert('Erro: ' + (d.erro || 'Tente novamente.')); }
+    }
+  </script>
+</body>
+</html>

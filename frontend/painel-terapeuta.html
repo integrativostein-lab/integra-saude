@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Terapeuta - Integra</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <div class="painel">
+    <div class="painel-sidebar">
+      <h3>🌿 Integra</h3>
+      <nav>
+        <a href="#" class="ativo">📊 Dashboard</a>
+        <a href="#" id="menu-agenda">📅 Agenda</a>
+        <a href="#" id="menu-pacientes">👥 Pacientes</a>
+        <a href="#" id="menu-loja">🛒 Minha Loja</a>
+        <a href="#" onclick="logout()">🚪 Sair</a>
+      </nav>
+    </div>
+    <div class="painel-conteudo">
+      <h2>Dashboard</h2>
+      <p style="color:var(--texto-medio);margin-bottom:24px;">Bem-vindo(a) ao seu painel.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div class="card"><h3>Consultas Hoje</h3><p style="font-size:28px;" id="dash-hoje">-</p></div>
+        <div class="card"><h3>Pacientes</h3><p style="font-size:28px;" id="dash-pacientes">-</p></div>
+        <div class="card"><h3>Faturamento Mês</h3><p style="font-size:28px;" id="dash-fat">-</p></div>
+      </div>
+
+      <div class="card"><h3>Próximos Agendamentos</h3><div id="lista-agendamentos" style="margin-top:10px;"></div></div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    async function carregar() {
+      var token = localStorage.getItem('integra_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+
+      var r = await fetch(`${CONFIG.API_URL}/agendamentos/meus`, { headers: { 'Authorization': `Bearer ${token}` } });
+      var dados = await r.json();
+      document.getElementById('dash-hoje').textContent = dados.filter(a => a.data_agendamento === new Date().toISOString().split('T')[0]).length;
+      document.getElementById('lista-agendamentos').innerHTML = dados.slice(0,5).map(a => `<p style="font-size:13px;">📅 ${a.data_agendamento} ${a.horario_inicio} — ${a.status} — R$ ${a.valor}</p>`).join('') || '<p>Nenhum</p>';
+    }
+    carregar();
+  </script>
+</body>
+</html>
