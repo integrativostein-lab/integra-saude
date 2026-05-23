@@ -9,7 +9,7 @@
   <style>
     .manual { max-width: 900px; margin: 40px auto; padding: 40px; background: var(--branco); border-radius: var(--raio-borda); box-shadow: var(--sombra); }
     .manual h1 { color: var(--azul-escuro); text-align: center; margin-bottom: 10px; }
-    .manual h2 { color: var(--azul-escuro); margin-top: 36px; border-bottom: 2px solid var(--laranja); padding-bottom: 8px; }
+    .manual h2 { color: var(--azul-escuro); margin-top: 40px; border-bottom: 2px solid var(--laranja); padding-bottom: 8px; }
     .manual h3 { color: var(--azul-medio); margin-top: 24px; }
     .manual p, .manual li { color: var(--texto-escuro); line-height: 1.8; }
     .manual .dica { background: var(--laranja-claro); padding: 14px 18px; border-radius: 8px; margin: 14px 0; font-size: 14px; border-left: 4px solid var(--laranja); }
@@ -17,175 +17,133 @@
     .manual table { width: 100%; border-collapse: collapse; margin: 16px 0; }
     .manual th { background: var(--azul-escuro); color: var(--branco); padding: 10px 14px; text-align: left; font-size: 13px; }
     .manual td { padding: 10px 14px; border-bottom: 1px solid #E2E8F0; font-size: 13px; }
-    .manual .sumario { background: var(--cinza-claro); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-    .manual .sumario a { color: var(--azul-escuro); text-decoration: none; }
+    .pesquisa { margin-bottom: 30px; }
+    .pesquisa input { width: 100%; padding: 14px 18px; border: 2px solid #E2E8F0; border-radius: 30px; font-size: 16px; }
+    .pesquisa input:focus { outline: none; border-color: var(--azul-escuro); }
+    .sumario { background: var(--cinza-claro); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+    .sumario a { color: var(--azul-escuro); text-decoration: none; }
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="logo">🌿 Integra<span>.</span></div>
-    <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a> <a href="login.html">Entrar</a></div>
+    <div class="menu"><a href="index.html">Início</a> <a href="login.html">Entrar</a></div>
   </nav>
 
-  <div class="manual">
+  <div class="manual" id="manual-conteudo">
     <h1>📖 Manual de Uso do Integra</h1>
-    <p style="text-align:center;color:var(--texto-medio);">Aprenda a usar todas as funcionalidades do sistema.</p>
+    <p style="text-align:center;color:var(--texto-medio);">"Porque até o sistema mais completo do mundo é inútil se você não souber onde clicar."</p>
+
+    <div class="pesquisa">
+      <input type="text" id="busca-manual" placeholder="🔍 Pesquisar no manual... (ex: nota fiscal, yoga, whatsapp)" oninput="pesquisar()">
+    </div>
 
     <div class="sumario">
       <h3>📑 Sumário</h3>
       <ol>
-        <li><a href="#primeiro-acesso">Primeiro Acesso e Cadastro</a></li>
+        <li><a href="#primeiro-acesso">Primeiro Acesso</a></li>
         <li><a href="#perfil">Configurando seu Perfil</a></li>
-        <li><a href="#valores">Definindo Valores e Agenda</a></li>
-        <li><a href="#pacientes">Recebendo Pacientes</a></li>
-        <li><a href="#atendimento">Atendimento (Teleconsulta e Presencial)</a></li>
-        <li><a href="#prontuario">Prontuário e Anamnese</a></li>
-        <li><a href="#prescricoes">Prescrições e Recomendações</a></li>
-        <li><a href="#loja">Loja Virtual e Física</a></li>
+        <li><a href="#valores">Valores e Agenda</a></li>
+        <li><a href="#pagamentos">Conectando os Pagamentos</a></li>
+        <li><a href="#whatsapp">Conectando o WhatsApp</a></li>
+        <li><a href="#nf">Emitindo Nota Fiscal</a></li>
+        <li><a href="#loja">Usando a Loja</a></li>
         <li><a href="#yoga">Módulo Yoga</a></li>
-        <li><a href="#massagens">Módulo Massagens (Assinatura)</a></li>
+        <li><a href="#massagens">Módulo Massagens</a></li>
         <li><a href="#retornos">Retornos Gratuitos</a></li>
-        <li><a href="#financeiro">Financeiro</a></li>
-        <li><a href="#integracoes">Integrações (APIs)</a></li>
         <li><a href="#contratos">Contratos de Assinatura</a></li>
+        <li><a href="#rh">Módulo RH (Premium e Enterprise)</a></li>
         <li><a href="#revenda">Revenda de Certificado e Domínio</a></li>
       </ol>
     </div>
 
-    <!-- 1. PRIMEIRO ACESSO -->
-    <h2 id="primeiro-acesso">1. Primeiro Acesso e Cadastro</h2>
-    <h3>Cadastro de Terapeuta</h3>
-    <p>1. Acesse a página de <strong>Cadastro</strong>.<br>2. Preencha nome, email e senha.<br>3. Escolha o tipo <strong>Terapeuta</strong>.<br>4. Informe suas especialidades (separadas por vírgula).<br>5. Marque se atende online, presencial ou ambos.<br>6. Clique em <strong>Criar Conta</strong>.</p>
+    <!-- 1 -->
+    <h2 id="primeiro-acesso">1. Primeiro Acesso</h2>
+    <h3>Criando sua conta</h3>
+    <p>1. Acesse a página de <strong>Cadastro</strong>.<br>2. Preencha nome, email e senha (use 👁️ para ver a senha).<br>3. Escolha o tipo de conta (Paciente, Terapeuta ou RH).<br>4. Se for Terapeuta, informe suas especialidades separadas por vírgulas.<br>5. Clique em <strong>Criar Conta</strong>.</p>
+    <div class="dica">💡 Se aparecer "Email já cadastrado", faça login ou use "Esqueci minha senha".</div>
 
-    <h3>Cadastro de Paciente</h3>
-    <p>1. Acesse a página de <strong>Cadastro</strong>.<br>2. Preencha nome, email e senha.<br>3. Escolha o tipo <strong>Paciente</strong>.<br>4. Clique em <strong>Criar Conta</strong>.</p>
+    <h3>Fazendo login</h3>
+    <p>1. Acesse a página de <strong>Login</strong>.<br>2. Digite email e senha.<br>3. Se errar 5 vezes, sua conta será bloqueada por 15 minutos (proteção, não castigo).</p>
 
-    <h3>Cadastro de Recepcionista (para Clínicas)</h3>
-    <p>1. O administrador da clínica acessa <strong>Painel Admin → Usuários</strong>.<br>2. Clica em <strong>Convidar Recepcionista</strong>.<br>3. Informa nome e email do recepcionista.<br>4. O recepcionista recebe um link por email para criar a senha.<br>5. Após o cadastro, o recepcionista acessa o <strong>Painel da Recepção</strong>.</p>
-
-    <div class="dica">💡 <strong>Dica:</strong> Guarde sua senha em um local seguro. Se esquecer, use a opção "Esqueci minha senha" na tela de login.</div>
-
-    <!-- 2. PERFIL -->
+    <!-- 2 -->
     <h2 id="perfil">2. Configurando seu Perfil</h2>
-    <p>No menu lateral, acesse <strong>⚙️ Configurações</strong> e preencha:</p>
-    <ul>
-      <li><strong>Registro profissional:</strong> CRM, CREFITO, CRN, etc. (se tiver conselho de classe).</li>
-      <li><strong>Registro ABRATH:</strong> Se for terapeuta holístico (opcional, mas valoriza seu perfil).</li>
-      <li><strong>Cidade e Estado:</strong> Para aparecer nas buscas por CEP.</li>
-      <li><strong>Atendimento Online e/ou Presencial:</strong> Marque os dois se atender ambos.</li>
-    </ul>
+    <p>No menu lateral, acesse <strong>⚙️ Configurações</strong> e preencha: registro profissional, ABRATH (opcional), cidade, estado, especialidades e modalidades de atendimento.</p>
+    <div class="alerta">⚠️ Massoterapia, Quiropraxia e Acupuntura só permitem atendimento Presencial. O sistema bloqueia a opção Online automaticamente.</div>
 
-    <!-- 3. VALORES E AGENDA -->
-    <h2 id="valores">3. Definindo Valores e Agenda</h2>
-    <h3>Valores por especialidade</h3>
-    <p>1. Acesse <strong>💰 Valores</strong> no menu lateral.<br>2. Para cada especialidade, defina o valor <strong>Online</strong> e <strong>Presencial</strong>.<br>3. Defina a duração da sessão (padrão: 60 minutos).<br>4. Clique em <strong>Salvar</strong>.</p>
+    <!-- 3 -->
+    <h2 id="valores">3. Valores e Agenda</h2>
+    <p><strong>💰 Valores:</strong> defina o preço online e presencial para cada especialidade.<br><strong>📅 Agenda:</strong> configure seus horários e regras de agendamento (antecedência, cancelamento, tolerância de atraso, multa por falta).</p>
+    <div class="dica">💡 Você pode cobrar valores diferentes para online e presencial. Afinal, atender presencialmente gasta água, café e luz.</div>
 
-    <h3>Configurando a agenda</h3>
-    <p>1. Acesse <strong>📅 Agenda</strong>.<br>2. Defina seus dias e horários de atendimento.<br>3. Configure as regras:<br>   - <strong>Antecedência mínima:</strong> quantas horas antes o paciente precisa agendar.<br>   - <strong>Prazo para cancelamento:</strong> até quando o paciente pode cancelar sem custo.<br>   - <strong>Tolerância de atraso:</strong> quantos minutos você espera antes de considerar falta.</p>
+    <!-- 4 -->
+    <h2 id="pagamentos">4. Conectando os Pagamentos</h2>
+    <p>1. Crie uma conta gratuita no PagSeguro ou PagBank.<br>2. No painel do gateway, vá em Integrações → Gerar Token.<br>3. Copie o token.<br>4. No Integra, acesse <strong>⚙️ Configurações → Integrações → Pagamentos</strong> e cole o token.<br>5. Salve e teste com uma consulta de R$ 1.</p>
 
-    <!-- 4. PACIENTES -->
-    <h2 id="pacientes">4. Recebendo Pacientes</h2>
-    <p>Seus pacientes podem encontrar você pela página inicial do Integra, filtrando por especialidade, CEP ou seu nome. O agendamento é feito diretamente pelo sistema, respeitando as regras que você definiu.</p>
-    <p>Você acompanha tudo em <strong>📅 Meus Agendamentos</strong>.</p>
+    <!-- 5 -->
+    <h2 id="whatsapp">5. Conectando o WhatsApp</h2>
+    <p>1. Acesse o painel da Evolution API (fornecido pelo Integra).<br>2. Crie uma instância com seu número de WhatsApp.<br>3. Escaneie o QR Code com seu celular.<br>4. Copie o token.<br>5. No Integra, acesse <strong>⚙️ Configurações → Integrações → WhatsApp</strong> e cole o token.</p>
+    <div class="dica">💡 Depois de configurado, o sistema envia lembretes automáticos. Você não precisa fazer nada.</div>
 
-    <!-- 5. ATENDIMENTO -->
-    <h2 id="atendimento">5. Atendimento (Teleconsulta e Presencial)</h2>
-    <h3>Teleconsulta (Online)</h3>
-    <p>1. No horário da consulta, acesse <strong>Meus Agendamentos</strong>.<br>2. Clique em <strong>Iniciar Teleconsulta</strong>.<br>3. A sala virtual abre. O paciente entra pelo link enviado por WhatsApp.<br>4. A presença é detectada automaticamente quando o paciente entra.</p>
+    <!-- 6 -->
+    <h2 id="nf">6. Emitindo Nota Fiscal</h2>
+    <div class="alerta">⚠️ Requer Certificado Digital (A1 ou A3). Você pode comprar em qualquer Autoridade Certificadora ou no Integra (menu Revenda). Não há venda casada.</div>
+    <p>1. Compre o certificado.<br>2. Faça upload do arquivo .pfx em <strong>Configurações → Integrações → Nota Fiscal</strong>.<br>3. Informe a senha e a Inscrição Municipal.<br>4. Escolha o modo de emissão (Automática ou Manual).<br><strong>Loja Virtual:</strong> sempre automática.<br><strong>Consultas:</strong> você decide se emite ou não (altamente recomendado).</p>
 
-    <h3>Atendimento Presencial</h3>
-    <p>O paciente chega à clínica e a recepção faz o check-in pelo painel. O status muda para "Em andamento". Após a sessão, é marcado como "Realizado".</p>
+    <!-- 7 -->
+    <h2 id="loja">7. Usando a Loja</h2>
+    <p>1. Ative em <strong>⚙️ Configurações → Loja</strong>.<br>2. Cadastre produtos em <strong>🛒 Minha Loja</strong>.<br>3. Defina frete grátis e formas de pagamento.<br>4. Para venda presencial, use <strong>Loja Física</strong> no balcão da recepção.</p>
+    <div class="dica">💡 Se não quiser loja, deixe desativado. O paciente nem verá essa opção.</div>
 
-    <!-- 6. PRONTUÁRIO -->
-    <h2 id="prontuario">6. Prontuário e Anamnese</h2>
-    <p>O Integra possui duas partes de anamnese:<br>   - <strong>Parte 1 (Estado Atual):</strong> preenchida pelo paciente (sono, apetite, medicamentos, alergias, etc.).<br>   - <strong>Parte 2 (Ficha Complementar):</strong> personalizada por você para cada especialidade.</p>
-    <p>Acesse <strong>👥 Pacientes</strong> → clique no nome → <strong>Prontuário</strong> para registrar evoluções e anexar exames.</p>
+    <!-- 8 -->
+    <h2 id="yoga">8. Módulo Yoga</h2>
+    <p>Crie planos de assinatura ou aulas avulsas. Presença automática na teleconsulta. Faltas geram reposição em 30 dias (sem aviso prévio). Relatórios em <strong>Yoga → Relatórios</strong>.</p>
 
-    <!-- 7. PRESCRIÇÕES -->
-    <h2 id="prescricoes">7. Prescrições e Recomendações</h2>
-    <div class="alerta">⚠️ <strong>Atenção:</strong> Profissionais com conselho de classe (CRM, CREFITO, CRN) emitem <strong>Prescrições</strong>. Terapeutas sem conselho emitem <strong>Solicitações</strong>. Para exames: profissionais habilitados usam <strong>Solicitação de Exame</strong>; terapeutas usam <strong>Sugestão de Exame</strong>. O sistema se adapta automaticamente.</div>
-    <p>Use o <strong>Banco de Dados Terapêutico</strong> para selecionar medicamentos, fórmulas e recomendações. Preencha dosagem, horários e tempo de uso. O paciente recebe o documento digital.</p>
+    <!-- 9 -->
+    <h2 id="massagens">9. Módulo Massagens</h2>
+    <p>Funciona igual ao módulo Yoga. Planos de assinatura, sessões avulsas, presença automática, reposição em 30 dias.</p>
 
-    <!-- 8. LOJA -->
-    <h2 id="loja">8. Loja Virtual e Física</h2>
-    <p>Ative sua loja em <strong>⚙️ Configurações → Loja</strong>. Cadastre produtos, defina frete grátis e formas de pagamento. A loja física funciona no balcão da recepção, com estoque unificado.</p>
-    <div class="dica">💡 Se você não quiser ter loja, é só deixar desativado. O paciente nem saberá que essa função existe.</div>
+    <!-- 10 -->
+    <h2 id="retornos">10. Retornos Gratuitos</h2>
+    <p>No prontuário, clique em <strong>Agendar Retorno</strong>. Defina um prazo máximo. O paciente recebe notificação. O sistema identifica automaticamente se é retorno (grátis) ou consulta nova (paga).</p>
 
-    <!-- 9. YOGA -->
-    <h2 id="yoga">9. Módulo Yoga</h2>
-    <p>Crie planos de assinatura ou ofereça aulas avulsas. Defina valores online e presenciais. A presença é detectada automaticamente na teleconsulta. Faltas geram crédito de reposição por 30 dias — sem necessidade de aviso prévio. Acesse relatórios de presença em <strong>Yoga → Relatórios</strong>.</p>
+    <!-- 11 -->
+    <h2 id="contratos">11. Contratos de Assinatura</h2>
+    <p>Crie contratos para Yoga e Massagens com nome, sessões, valor e forma de pagamento (à vista ou parcelado). Cada sessão desconta do saldo. Notificações automáticas de vencimento.</p>
 
-    <!-- 10. MASSAGENS -->
-    <h2 id="massagens">10. Módulo Massagens (Assinatura)</h2>
-    <p>Funciona igual ao módulo Yoga: crie planos de assinatura (ex: "5 sessões/mês"), defina valores e regras. Ideal para massoterapeutas que trabalham com pacotes de sessões.</p>
-    <p>Cada sessão agendada desconta automaticamente do saldo do contrato. O profissional acompanha pelo financeiro: quantas sessões foram usadas e quantas restam.</p>
+    <!-- 12 -->
+    <h2 id="rh">12. Módulo RH (Premium e Enterprise)</h2>
+    <p>Cadastre funcionários (nome, CPF, PIS, CTPS, cargo, salário). Gere folha de pagamento com INSS, IRRF, FGTS e contracheque. Emita guias (DAS-MEI, GPS, FGTS). Configure previdência complementar.</p>
+    <div class="dica">💡 O sistema faz as contas. O contador humano revisa. Todo mundo feliz.</div>
 
-    <!-- 11. RETORNOS -->
-    <h2 id="retornos">11. Retornos Gratuitos</h2>
-    <p>No prontuário do paciente, clique em <strong>Agendar Retorno</strong>. Defina um prazo máximo (ex: 30 dias). O paciente recebe uma notificação para agendar. Quando ele agenda, o sistema identifica automaticamente que é um retorno e não cobra.</p>
-    <p>Se o paciente tentar agendar após o prazo, o sistema cobra o valor normal da consulta.</p>
-
-    <!-- 12. FINANCEIRO -->
-    <h2 id="financeiro">12. Financeiro</h2>
-    <p>Acompanhe faturamento, recebimentos e histórico de transações em <strong>💰 Financeiro</strong>.</p>
-
-    <h3>Emitindo Notas Fiscais</h3>
-    <table>
-      <tr><th>Situação</th><th>Emissão</th></tr>
-      <tr><td>Loja Virtual</td><td>✅ Automática</td></tr>
-      <tr><td>Consultas e Serviços</td><td>👆 Você decide (clique em Autorizar)</td></tr>
-    </table>
-    <p>A emissão de NF de serviços é de responsabilidade do profissional. O Integra prepara tudo, mas a decisão final é sua. A emissão é altamente recomendada para manter sua situação fiscal em dia.</p>
-    <p>Em <strong>⚙️ Configurações → Nota Fiscal</strong>, você pode escolher o modo de emissão (automática ou manual).</p>
-
-    <h3>Baixa manual de pagamentos</h3>
-    <p>Se o paciente pagou por PIX direto para sua conta (fora do sistema), acesse <strong>Financeiro → Baixa Manual</strong>, informe o valor e a forma de pagamento. O sistema atualiza o status.</p>
-
-    <!-- 13. INTEGRAÇÕES -->
-    <h2 id="integracoes">13. Integrações (APIs)</h2>
-
-    <h3>📱 WhatsApp</h3>
-    <p>Acesse <strong>⚙️ Configurações → Integrações → WhatsApp</strong>, cole o token e salve. Depois disso, o sistema envia lembretes automaticamente.</p>
-    <p><strong>Automático:</strong> ✅ Sim, após colar o token.</p>
-
-    <h3>💳 PagSeguro / PagBank</h3>
-    <p>Crie uma conta gratuita no gateway, gere o token e cole no Integra. Após salvar, os pagamentos são processados automaticamente.</p>
-    <p><strong>Automático:</strong> ✅ Sim, após colar o token.</p>
-
-    <h3>🧾 Nota Fiscal</h3>
-    <p><strong>Automático:</strong> Loja virtual: ✅ Sim. Consultas: ❌ Você autoriza.<br><strong>Requisito:</strong> Certificado Digital (A1 ou A3). Sem ele, o sistema mostra o link do portal manual da prefeitura.</p>
-
-    <h3>📧 Email Profissional (Zoho Mail)</h3>
-    <p><strong>Automático:</strong> ❌ Não. Você precisa criar a conta no Zoho e configurar os registros DNS no seu provedor de domínio.</p>
-
-    <h3>🌐 Domínio Próprio</h3>
-    <p><strong>Automático:</strong> ❌ Não. Você compra o domínio e configura os registros DNS. Se comprar pelo Integra, mostramos exatamente quais registros copiar e colar.</p>
-    <p>Disponível apenas no plano Enterprise.</p>
-
-    <!-- 14. CONTRATOS -->
-    <h2 id="contratos">14. Contratos de Assinatura</h2>
-    <p>Para Yoga, Massagens e outras modalidades, o sistema gera contratos automaticamente. O profissional define: nome do plano, número de sessões, valor, prazo de reposição e se o pagamento é à vista ou parcelado.</p>
-    <p>O contrato fica registrado na agenda e no financeiro. Cada sessão agendada desconta do saldo. O sistema notifica paciente e profissional sobre parcelas a vencer (X dias antes, 1 dia antes, no dia e em atraso).</p>
-
-    <!-- 15. REVENDA -->
-    <h2 id="revenda">15. Revenda de Certificado Digital e Domínio</h2>
-    <p><strong>Certificado Digital (A1):</strong> <code>{preco_certificado_a1}</code><br>
-    <strong>Certificado Digital (A3):</strong> <code>{preco_certificado_a3}</code><br>
-    <strong>Domínio .com.br:</strong> <code>{preco_dominio_com_br}</code><br>
-    <strong>Domínio .com:</strong> <code>{preco_dominio_com}</code></p>
-
-    <div class="dica">💡 <strong>Onde comprar:</strong> Você pode adquirir em qualquer fornecedor (Certisign, Serasa, Registro.br, GoDaddy, etc.). Se comprar pelo Integra, a configuração é mais prática: mostramos exatamente o que copiar e colar. Não há venda casada — a escolha é sua.</div>
+    <!-- 13 -->
+    <h2 id="revenda">13. Revenda de Certificado e Domínio</h2>
+    <p>Compre certificado digital (A1 ou A3) e domínio (.com.br ou .com) diretamente pelo painel. Valores atualizados automaticamente. Você pode comprar em qualquer fornecedor — a escolha é sua. Se comprar pelo Integra, a configuração é mais prática.</p>
 
     <p style="text-align:center;margin-top:40px;color:var(--texto-medio);">Dúvidas? <strong>suporte@integra.saude</strong></p>
   </div>
 
   <footer>
-    <p>🌿 Integra — Saúde Integrativa &copy; 2026</p>
-    <p style="margin-top:8px;font-size:12px;">
-      <a href="termos.html">Termos de Uso</a> &nbsp;|&nbsp;
-      <a href="privacidade.html">Política de Privacidade</a> &nbsp;|&nbsp;
-      <a href="manual.html">Manual de Uso</a>
-    </p>
+    <p>🌿 Integra &copy; 2026 | <a href="termos.html">Termos</a> | <a href="privacidade.html">Privacidade</a> | <a href="manual.html">Manual</a></p>
   </footer>
+
+  <script>
+    function normalizar(t) { return t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+    function pesquisar() {
+      var termo = normalizar(document.getElementById('busca-manual').value);
+      var secoes = document.querySelectorAll('.manual h2');
+      document.querySelectorAll('.manual h2').forEach(s => s.style.background = '');
+      if (!termo) return;
+      secoes.forEach(s => {
+        var bloco = s.nextElementSibling;
+        var texto = normalizar(s.textContent + (bloco ? bloco.textContent : ''));
+        if (texto.includes(termo)) {
+          s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          s.style.background = '#FEFCBF';
+          setTimeout(() => s.style.background = '', 3000);
+        }
+      });
+    }
+  </script>
 </body>
 </html>

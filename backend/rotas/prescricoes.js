@@ -10,16 +10,66 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
-router.post('/', autenticar, (req, res) => {
-  const { paciente_id, itens, observacoes } = req.body;
-  const prof = db.prepare('SELECT conselho_classe FROM usuarios WHERE id = ?').get(req.usuario.id);
-  const tipo = prof?.conselho_classe ? 'prescricao' : 'solicitacao';
-  const r = db.prepare('INSERT INTO prescricoes (paciente_id, profissional_id, tipo, itens, observacoes) VALUES (?, ?, ?, ?, ?)').run(paciente_id, req.usuario.id, tipo, JSON.stringify(itens), observacoes);
-  res.status(201).json({ mensagem: `${tipo} registrada!`, tipo, id: r.lastInsertRowid });
+router.post('/', autenticar, async (req, res) => {
+  const { paciente_id, itens, exames_sugeridos, observacoes, tipo_controlado } = req.body;
+  const prof = await db.query('SELECT conselho_classe FROM usuarios WHERE id = $1', [req.usuario.id]);
+  let tipo = 'solicitacao';
+  if (prof.rows[0]?.conselho_classe) tipo = 'prescricao';
+  if (tipo_controlado) tipo = 'controle_especial';
+
+  const r = await db.query(
+    'INSERT INTO prescricoes (paciente_id, profissional_id, tipo, itens, exames_sugeridos, observacoes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+    [paciente_id, req.usuario.id, tipo, JSON.stringify(itens), exames_sugeridos ? JSON.stringify(exames_sugeridos) : null, observacoes]
+  );
+
+  const resposta = { mensagem: `${tipo === 'prescricao' ? 'Prescrição' : tipo === 'controle_especial' ? 'Receita de Controle Especial' : 'Solicitação'} registrada!`, tipo, id: r.rows[0].id };
+
+  // Se for controle especial, gerar 2 vias
+  if (tipo === 'controle_especial') {
+    resposta.vias = 2;
+    resposta.validade = '30 dias';
+    resposta.aviso = 'Receita de Controle Especial — 2 vias. Apresentar na farmácia.';
+  }
+
+  res.status(201).json(resposta);
 });
 
-router.get('/minhas', autenticar, (req, res) => {
-  res.json(db.prepare('SELECT * FROM prescricoes WHERE paciente_id = ? ORDER BY data_prescricao DESC').all(req.usuario.id));
+router.get('/minhas', autenticar, async (req, res) => {
+  const r = await db.query('SELECT * FROM prescricoes WHERE paciente_id = $1 ORDER BY data_prescricao DESC', [req.usuario.id]);
+  res.json(r.rows);
+});
+
+router.get('/banco-terapeutico', async (req, res) => {
+  const { especialidade_id, tipo, busca } = req.query;
+  let q = 'SELECT bt.*, e.nome as especialidade_nome FROM banco_terapeutico bt JOIN especialidades e ON bt.especialidade_id = e.id WHERE bt.ativo = 1';
+  const params = [];
+  let i = 1;
+  if (especialidade_id) { q += ` AND bt.especialidade_id = $${i}`; params.push(especialidade_id); i++; }
+  if (tipo) { q += ` AND bt.tipo = $${i}`; params.push(tipo); i++; }
+  if (busca) { q += ` AND bt.nome ILIKE $${i}`; params.push(`%${busca}%`); i++; }
+  q += ' LIMIT 100';
+  const r = await db.query(q, params);
+  res.json(r.rows);
+});
+
+router.post('/banco-terapeutico', autenticar, async (req, res) => {
+  const { especialidade_id, tipo, nome, descricao, contraindicacoes, dosagem_padrao } = req.body;
+  const r = await db.query(
+    'INSERT INTO banco_terapeutico (especialidade_id, tipo, nome, descricao, contraindicacoes, dosagem_padrao, criado_por) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    [especialidade_id, tipo, nome, descricao, contraindicacoes, dosagem_padrao, req.usuario.id]
+  );
+  res.status(201).json({ mensagem: 'Item adicionado ao banco terapêutico!', id: r.rows[0].id });
+});
+
+router.put('/banco-terapeutico/:id', autenticar, async (req, res) => {
+  const { nome, descricao, contraindicacoes, dosagem_padrao } = req.body;
+  await db.query('UPDATE banco_terapeutico SET nome=$1, descricao=$2, contraindicacoes=$3, dosagem_padrao=$4 WHERE id=$5 AND criado_por=$6', [nome, descricao, contraindicacoes, dosagem_padrao, req.params.id, req.usuario.id]);
+  res.json({ mensagem: 'Item atualizado!' });
+});
+
+router.delete('/banco-terapeutico/:id', autenticar, async (req, res) => {
+  await db.query('DELETE FROM banco_terapeutico WHERE id=$1 AND criado_por=$2', [req.params.id, req.usuario.id]);
+  res.json({ mensagem: 'Item removido!' });
 });
 
 module.exports = router;

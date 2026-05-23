@@ -3,40 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Encontre terapeutas integrativos. Ayurveda, MTC, Fitoterapia, Massoterapia, Yoga e muito mais.">
-  <meta name="theme-color" content="#1A365D">
-  <title>Integra - Saúde Integrativa</title>
+  <meta name="description" content="Encontre terapeutas integrativos. Ayurveda, MTC, Fitoterapia, Massoterapia, Yoga e muito mais. Agende online ou presencial. Baixe nosso App grátis.">
+  <meta name="theme-color" content="#1B4332">
+  <title>Integra — Saúde Integrativa | Encontre seu Terapeuta</title>
   <link rel="stylesheet" href="css/estilo.css">
   <link rel="manifest" href="manifest.json">
+  <style>
+    .hero-pacientes { background: linear-gradient(rgba(27,67,50,0.75), rgba(27,67,50,0.75)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=800&fit=crop'); background-size: cover; background-position: center; color: #FFF; padding: 100px 40px; text-align: center; }
+    .hero-pacientes h1 { font-size: 42px; margin-bottom: 16px; font-weight: 300; letter-spacing: -0.5px; }
+    .hero-pacientes p { font-size: 17px; opacity: 0.85; max-width: 600px; margin: 0 auto 28px; }
+    .app-banner { background: rgba(255,255,255,0.10); border-radius: 14px; padding: 18px 28px; max-width: 450px; margin: 30px auto 0; backdrop-filter: blur(6px); display: flex; align-items: center; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .app-banner p { margin: 0; font-size: 14px; opacity: 0.9; }
+    .secao-como { background: #FFF; padding: 80px 40px; text-align: center; }
+    .secao-como h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 40px; }
+    .passos { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; }
+    .passo { max-width: 220px; }
+    .passo .icone { font-size: 42px; margin-bottom: 12px; }
+    .passo h3 { color: #1B4332; font-size: 18px; margin-bottom: 6px; }
+    .passo p { color: #666; font-size: 14px; }
+    .secao-espec { background: #F5F0E8; padding: 80px 40px; text-align: center; }
+    .secao-espec h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 40px; }
+    .grid-espec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 900px; margin: 0 auto; }
+    .card-espec { background: #FFF; padding: 24px 16px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s; }
+    .card-espec:hover { transform: translateY(-3px); }
+    .card-espec .icone { font-size: 30px; margin-bottom: 8px; }
+    .card-espec h4 { color: #1B4332; font-size: 15px; }
+    .secao-app { background: #E8F0E8; padding: 80px 40px; text-align: center; }
+    .secao-app h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 16px; }
+    .secao-app p { color: #555; max-width: 550px; margin: 0 auto 24px; }
+    @media (max-width: 768px) {
+      .hero-pacientes h1 { font-size: 28px; }
+      .grid-espec { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="logo">🌿 Integra<span>.</span></div>
     <div class="menu">
       <a href="#especialidades">Especialidades</a>
+      <a href="#como-funciona">Como Funciona</a>
+      <a href="blog.html">Blog</a>
       <a href="profissionais.html">Para Profissionais</a>
-<a href="login.html" class="btn btn-primario" style="padding:8px 20px;font-size:13px;">Entrar</a>
+      <a href="login.html" class="btn btn-primario" style="padding:8px 20px;font-size:13px;">Entrar</a>
     </div>
   </nav>
 
-  <section class="hero">
-    <h1 data-i18n="hero.titulo">Encontre seu terapeuta integrativo ideal</h1>
-    <p data-i18n="hero.subtitulo">Ayurveda · MTC · Fitoterapia · Massoterapia · Yoga · Xamanismo e muito mais. Agende consultas online ou presenciais.</p>
-    <a href="#" class="btn btn-primario" style="font-size:16px;padding:14px 32px;">Buscar Profissionais</a>
+  <section class="hero-pacientes">
+    <h1>Encontre seu terapeuta integrativo</h1>
+    <p>Ayurveda · MTC · Fitoterapia · Massoterapia · Yoga · Xamanismo e muito mais. Agende consultas online ou presenciais.</p>
+    <a href="busca.html" class="btn btn-primario" style="font-size:16px;padding:14px 32px;">Buscar Profissionais</a>
+    <div class="app-banner">
+      <span style="font-size:28px;">📱</span>
+      <p>Baixe nosso App grátis. Sem loja de apps. Ocupa menos de 1 MB.</p>
+      <a href="#" class="btn btn-secundario" style="padding:8px 18px;font-size:13px;" onclick="alert('App instalado! (PWA)')">Instalar App</a>
+    </div>
   </section>
 
-  <section class="secao secao-branca" id="especialidades">
-    <div class="container">
-      <h2>Especialidades</h2>
-      <div class="cards" style="margin-top:40px;">
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">🌿</div><h3>Fitoterapia</h3><p>Tratamento com plantas medicinais</p></div>
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">🕉️</div><h3>Ayurveda</h3><p>Medicina tradicional indiana</p></div>
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">🏮</div><h3>MTC</h3><p>Medicina Tradicional Chinesa</p></div>
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">💆</div><h3>Massoterapia</h3><p>Massagem terapêutica</p></div>
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">🧘</div><h3>Yoga</h3><p>Práticas de yoga e meditação</p></div>
-        <div class="card"><div style="font-size:32px;margin-bottom:10px;">🦴</div><h3>Fisioterapia</h3><p>Reabilitação física</p></div>
-      </div>
+  <section class="secao-como" id="como-funciona">
+    <h2>Como Funciona</h2>
+    <div class="passos">
+      <div class="passo"><div class="icone">🔍</div><h3>Busque</h3><p>Filtre por especialidade, CEP e modalidade</p></div>
+      <div class="passo"><div class="icone">📅</div><h3>Agende</h3><p>Escolha o melhor horário em segundos</p></div>
+      <div class="passo"><div class="icone">🌿</div><h3>Consulte</h3><p>Online ou presencial, com lembretes</p></div>
     </div>
+  </section>
+
+  <section class="secao-espec" id="especialidades">
+    <h2>Especialidades</h2>
+    <div class="grid-espec">
+      <div class="card-espec"><div class="icone">🌿</div><h4>Fitoterapia</h4></div>
+      <div class="card-espec"><div class="icone">🕉️</div><h4>Ayurveda</h4></div>
+      <div class="card-espec"><div class="icone">🏮</div><h4>MTC</h4></div>
+      <div class="card-espec"><div class="icone">💆</div><h4>Massoterapia</h4></div>
+      <div class="card-espec"><div class="icone">🧘</div><h4>Yoga</h4></div>
+      <div class="card-espec"><div class="icone">🦴</div><h4>Fisioterapia</h4></div>
+      <div class="card-espec"><div class="icone">🔮</div><h4>Xamanismo</h4></div>
+      <div class="card-espec"><div class="icone">🧴</div><h4>Aromaterapia</h4></div>
+    </div>
+  </section>
+
+  <section class="secao-app">
+    <h2>Baixe nosso App</h2>
+    <p>O Integra é um PWA. Instale em segundos no seu celular ou computador. Funciona offline, ocupa menos de 1 MB e está sempre atualizado.</p>
+    <a href="#" class="btn btn-primario" style="font-size:16px;padding:14px 32px;" onclick="alert('App instalado! (PWA)')">Instalar App Grátis</a>
   </section>
 
   <footer>
@@ -44,12 +94,13 @@
     <p style="margin-top:8px;font-size:12px;">
       <a href="termos.html">Termos de Uso</a> &nbsp;|&nbsp;
       <a href="privacidade.html">Política de Privacidade</a> &nbsp;|&nbsp;
-      <a href="manual.html">📖 Manual de Uso</a>
+      <a href="manual.html">Manual de Uso</a>
     </p>
   </footer>
 
   <script src="js/config.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/audio-ambiente.js"></script>
 </body>
 </html>

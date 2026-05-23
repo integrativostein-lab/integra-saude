@@ -11,6 +11,9 @@
     .msg { padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
     .msg.sucesso { background: #C6F6D5; color: #22543D; }
     .msg.erro { background: #FED7D7; color: #9B2C2C; }
+    .senha-wrapper { position: relative; }
+    .senha-wrapper input { width: 100%; padding-right: 40px; }
+    .senha-wrapper .olhinho { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; }
   </style>
 </head>
 <body>
@@ -29,15 +32,24 @@
     </div>
     <div class="form-grupo">
       <label>Senha</label>
-      <input type="password" id="senha" placeholder="admin123" required>
+      <div class="senha-wrapper">
+        <input type="password" id="senha" placeholder="Sua senha" required>
+        <button class="olhinho" onclick="toggleSenha()" type="button">👁️</button>
+      </div>
     </div>
 
     <button class="btn btn-primario" onclick="login()" style="width:100%;margin-top:10px;">Entrar</button>
     <p style="text-align:center;margin-top:16px;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
   </div>
 
+  <script src="js/config.js"></script>
   <script>
-    var API = 'http://localhost:3000/api';
+    function toggleSenha() {
+      var s = document.getElementById('senha');
+      var btn = document.querySelector('.olhinho');
+      if (s.type === 'password') { s.type = 'text'; btn.textContent = '🙈'; }
+      else { s.type = 'password'; btn.textContent = '👁️'; }
+    }
 
     async function login() {
       var msg = document.getElementById('msg');
@@ -55,7 +67,7 @@
       }
 
       try {
-        var r = await fetch(API + '/auth/login', {
+        var r = await fetch(`${CONFIG.API_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email, senha: senha })
@@ -73,7 +85,7 @@
         }
       } catch(e) {
         msg.className = 'msg erro';
-        msg.textContent = 'Erro de conexão. O servidor está rodando? (localhost:3000)';
+        msg.textContent = 'Erro de conexão. O servidor está rodando?';
       }
     }
   </script>

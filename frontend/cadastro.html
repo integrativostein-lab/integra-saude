@@ -11,6 +11,9 @@
     .msg { padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: none; }
     .msg.sucesso { background: #C6F6D5; color: #22543D; display: block; }
     .msg.erro { background: #FED7D7; color: #9B2C2C; display: block; }
+    .senha-wrapper { position: relative; }
+    .senha-wrapper input { width: 100%; padding-right: 40px; }
+    .senha-wrapper .olhinho { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; }
   </style>
 </head>
 <body>
@@ -33,13 +36,17 @@
     </div>
     <div class="form-grupo">
       <label>Senha * (mínimo 8 caracteres)</label>
-      <input type="password" id="senha" placeholder="Mínimo 8 caracteres" required>
+      <div class="senha-wrapper">
+        <input type="password" id="senha" placeholder="Mínimo 8 caracteres" required>
+        <button class="olhinho" onclick="toggleSenha()" type="button">👁️</button>
+      </div>
     </div>
     <div class="form-grupo">
       <label>Tipo de Conta *</label>
       <select id="tipo">
         <option value="paciente">Paciente</option>
         <option value="terapeuta">Terapeuta</option>
+        <option value="rh">RH (Clínica)</option>
       </select>
     </div>
     <div class="form-grupo" id="grupo-especialidades" style="display:none;">
@@ -53,24 +60,30 @@
 
   <script src="js/config.js"></script>
   <script>
+    function toggleSenha() {
+      var s = document.getElementById('senha');
+      var btn = document.querySelector('.olhinho');
+      if (s.type === 'password') { s.type = 'text'; btn.textContent = '🙈'; }
+      else { s.type = 'password'; btn.textContent = '👁️'; }
+    }
+
     document.getElementById('tipo').addEventListener('change', function() {
       document.getElementById('grupo-especialidades').style.display = this.value === 'terapeuta' ? 'block' : 'none';
     });
 
     async function cadastrar() {
-      const msg = document.getElementById('msg');
-      msg.className = 'msg';
-      msg.textContent = 'Enviando...';
+      var msg = document.getElementById('msg');
       msg.style.display = 'block';
       msg.className = 'msg';
+      msg.textContent = 'Enviando...';
       msg.style.background = '#EBF4FF';
       msg.style.color = '#1A365D';
 
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const senha = document.getElementById('senha').value.trim();
-      const tipo = document.getElementById('tipo').value;
-      const especialidadesRaw = document.getElementById('especialidades').value.trim();
+      var nome = document.getElementById('nome').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var senha = document.getElementById('senha').value.trim();
+      var tipo = document.getElementById('tipo').value;
+      var especialidadesRaw = document.getElementById('especialidades').value.trim();
 
       if (!nome || !email || !senha) {
         msg.className = 'msg erro';
@@ -84,39 +97,32 @@
         return;
       }
 
-      const body = { 
-        nome: nome, 
-        email: email, 
-        senha: senha, 
-        tipo: tipo, 
-        lgpd_consentimento: 1 
-      };
+      var body = { nome: nome, email: email, senha: senha, tipo: tipo, lgpd_consentimento: 1 };
 
       if (tipo === 'terapeuta') {
         body.atende_online = 1;
         body.atende_presencial = 1;
         if (especialidadesRaw) {
-          const especs = especialidadesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
-          body.especialidades = JSON.stringify(especs);
+          body.especialidades = JSON.stringify(especialidadesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0));
         }
       }
 
       try {
-        const r = await fetch(`${CONFIG.API_URL}/auth/cadastro`, {
+        var r = await fetch(`${CONFIG.API_URL}/auth/cadastro`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-        const d = await r.json();
+        var d = await r.json();
 
         if (r.ok) {
           localStorage.setItem('integra_token', d.token);
           localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
           msg.className = 'msg sucesso';
-          msg.innerHTML = '✅ Cadastro realizado com sucesso! <a href="busca.html" style="color:#22543D;text-decoration:underline;">Buscar profissionais</a>';
+          msg.innerHTML = '✅ Cadastro realizado! <a href="busca.html" style="color:#22543D;text-decoration:underline;">Buscar profissionais</a>';
         } else {
           msg.className = 'msg erro';
-          msg.textContent = d.erro || 'Erro ao cadastrar. Tente novamente.';
+          msg.textContent = d.erro || 'Erro ao cadastrar.';
         }
       } catch(e) {
         msg.className = 'msg erro';

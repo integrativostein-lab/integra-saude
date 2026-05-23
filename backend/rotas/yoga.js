@@ -10,43 +10,45 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
-router.post('/planos', autenticar, (req, res) => {
+router.post('/planos', autenticar, async (req, res) => {
   const { nome_plano, aulas_por_mes, valor_online, valor_presencial } = req.body;
-  const r = db.prepare('INSERT INTO yoga_planos (usuario_id, nome_plano, aulas_por_mes, valor_online, valor_presencial) VALUES (?, ?, ?, ?, ?)').run(req.usuario.id, nome_plano, aulas_por_mes, valor_online, valor_presencial);
-  res.status(201).json({ mensagem: 'Plano criado!', id: r.lastInsertRowid });
+  const r = await db.query('INSERT INTO yoga_planos (usuario_id, nome_plano, aulas_por_mes, valor_online, valor_presencial) VALUES ($1,$2,$3,$4,$5) RETURNING id', [req.usuario.id, nome_plano, aulas_por_mes, valor_online, valor_presencial]);
+  res.status(201).json({ mensagem: 'Plano criado!', id: r.rows[0].id });
 });
 
-router.get('/planos', (req, res) => {
-  res.json(db.prepare('SELECT * FROM yoga_planos WHERE ativo = 1').all());
+router.get('/planos', async (req, res) => {
+  const r = await db.query('SELECT * FROM yoga_planos WHERE ativo = 1');
+  res.json(r.rows);
 });
 
-router.post('/assinar', autenticar, (req, res) => {
+router.post('/assinar', autenticar, async (req, res) => {
   const { plano_id, modalidade } = req.body;
-  const plano = db.prepare('SELECT * FROM yoga_planos WHERE id = ?').get(plano_id);
-  if (!plano) return res.status(404).json({ erro: 'Plano não encontrado' });
-  const valor = modalidade === 'online' ? plano.valor_online : plano.valor_presencial;
+  const plano = await db.query('SELECT * FROM yoga_planos WHERE id = $1', [plano_id]);
+  if (plano.rows.length === 0) return res.status(404).json({ erro: 'Plano não encontrado' });
+  const p = plano.rows[0];
+  const valor = modalidade === 'online' ? p.valor_online : p.valor_presencial;
   const exp = new Date(); exp.setMonth(exp.getMonth() + 1);
-  const r = db.prepare("INSERT INTO yoga_assinaturas (paciente_id, plano_id, data_inicio, data_expiracao, aulas_restantes, valor_mensalidade) VALUES (?, ?, date('now'), ?, ?, ?)").run(req.usuario.id, plano_id, exp.toISOString().split('T')[0], plano.aulas_por_mes, valor);
-  res.status(201).json({ mensagem: 'Assinatura realizada!', id: r.lastInsertRowid });
+  const r = await db.query("INSERT INTO yoga_assinaturas (paciente_id, plano_id, data_inicio, data_expiracao, aulas_restantes, valor_mensalidade) VALUES ($1,$2,NOW(),$3,$4,$5) RETURNING id", [req.usuario.id, plano_id, exp.toISOString().split('T')[0], p.aulas_por_mes, valor]);
+  res.status(201).json({ mensagem: 'Assinatura realizada!', id: r.rows[0].id });
 });
 
-router.post('/checkin', autenticar, (req, res) => {
+router.post('/checkin', autenticar, async (req, res) => {
   const { agendamento_id } = req.body;
-  db.prepare("UPDATE agendamentos SET status = 'em_andamento', checkin_metodo = 'manual', checkin_horario = datetime('now','localtime') WHERE id = ? AND paciente_id = ?").run(agendamento_id, req.usuario.id);
+  await db.query("UPDATE agendamentos SET status = 'em_andamento', checkin_metodo = 'manual', checkin_horario = NOW() WHERE id = $1", [agendamento_id]);
   res.json({ mensagem: 'Check-in realizado!' });
 });
 
-router.get('/minhas-reposicoes', autenticar, (req, res) => {
-  const rep = db.prepare("SELECT r.*, a.data_agendamento FROM yoga_reposicoes r JOIN agendamentos a ON r.aula_faltada_id = a.id JOIN yoga_assinaturas ya ON r.assinatura_id = ya.id WHERE ya.paciente_id = ? AND r.status = 'pendente'").all(req.usuario.id);
-  res.json(rep);
+router.get('/minhas-reposicoes', autenticar, async (req, res) => {
+  const r = await db.query("SELECT r.*, a.data_agendamento FROM yoga_reposicoes r JOIN agendamentos a ON r.aula_faltada_id = a.id JOIN yoga_assinaturas ya ON r.assinatura_id = ya.id WHERE ya.paciente_id = $1 AND r.status = 'pendente'", [req.usuario.id]);
+  res.json(r.rows);
 });
 
-router.post('/presenca-video', autenticar, (req, res) => {
+router.post('/presenca-video', autenticar, async (req, res) => {
   const { agendamento_id } = req.body;
-  const ag = db.prepare('SELECT * FROM agendamentos WHERE id = ? AND paciente_id = ? AND modalidade = ?').get(agendamento_id, req.usuario.id, 'online');
-  if (!ag) return res.status(404).json({ erro: 'Agendamento não encontrado' });
-  if (['em_andamento', 'realizado'].includes(ag.status)) return res.json({ mensagem: 'Presença já registrada' });
-  db.prepare("UPDATE agendamentos SET status = 'em_andamento', checkin_metodo = 'auto_video', checkin_horario = datetime('now','localtime') WHERE id = ?").run(agendamento_id);
+  const ag = await db.query('SELECT * FROM agendamentos WHERE id = $1 AND paciente_id = $2 AND modalidade = $3', [agendamento_id, req.usuario.id, 'online']);
+  if (ag.rows.length === 0) return res.status(404).json({ erro: 'Agendamento não encontrado' });
+  if (['em_andamento', 'realizado'].includes(ag.rows[0].status)) return res.json({ mensagem: 'Presença já registrada' });
+  await db.query("UPDATE agendamentos SET status = 'em_andamento', checkin_metodo = 'auto_video', checkin_horario = NOW() WHERE id = $1", [agendamento_id]);
   res.json({ mensagem: 'Presença detectada automaticamente!' });
 });
 
