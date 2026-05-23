@@ -10,10 +10,15 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
-router.post('/criar-email', autenticar, (req, res) => {
+router.post('/criar-email', autenticar, async (req, res) => {
   const { dominio, email } = req.body;
-  db.prepare("INSERT INTO configuracoes (chave, valor, usuario_id) VALUES (?, ?, ?)").run('zoho_email_' + Date.now(), JSON.stringify({ dominio, email }), req.usuario.id);
+  await db.query("INSERT INTO configuracoes (chave, valor, usuario_id) VALUES ('zoho_email_' || $1, $2, $3)", [Date.now(), JSON.stringify({ dominio, email }), req.usuario.id]);
   res.json({ mensagem: `Email ${email}@${dominio} seria criado (modo teste)`, simulacao: true });
+});
+
+router.get('/meus-emails', autenticar, async (req, res) => {
+  const r = await db.query("SELECT * FROM configuracoes WHERE chave LIKE 'zoho_email_%' AND usuario_id = $1", [req.usuario.id]);
+  res.json(r.rows);
 });
 
 module.exports = router;

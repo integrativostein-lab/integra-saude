@@ -10,40 +10,37 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
-// Emitir guia (DAS, GPS, FGTS, etc.)
-router.post('/emitir-guia', autenticar, (req, res) => {
+router.post('/emitir-guia', autenticar, async (req, res) => {
   const { tipo, valor, data_vencimento } = req.body;
   if (!['DAS','GPS','FGTS','INSS_COMPLEMENTAR','ISS'].includes(tipo)) return res.status(400).json({ erro: 'Tipo inválido' });
-  const r = db.prepare('INSERT INTO guias_emitidas (empresa_id, tipo, valor, data_vencimento) VALUES (?, ?, ?, ?)').run(req.usuario.id, tipo, valor, data_vencimento);
-  res.status(201).json({ mensagem: 'Guia emitida!', id: r.lastInsertRowid, tipo, valor });
+  const r = await db.query('INSERT INTO guias_emitidas (empresa_id, tipo, valor, data_vencimento) VALUES ($1,$2,$3,$4) RETURNING id', [req.usuario.id, tipo, valor, data_vencimento]);
+  res.status(201).json({ mensagem: 'Guia emitida!', id: r.rows[0].id, tipo, valor });
 });
 
-// Listar guias
-router.get('/guias', autenticar, (req, res) => {
-  res.json(db.prepare('SELECT * FROM guias_emitidas WHERE empresa_id = ? ORDER BY data_vencimento DESC').all(req.usuario.id));
+router.get('/guias', autenticar, async (req, res) => {
+  const r = await db.query('SELECT * FROM guias_emitidas WHERE empresa_id = $1 ORDER BY data_vencimento DESC', [req.usuario.id]);
+  res.json(r.rows);
 });
 
-// Calcular DAS-MEI
-router.get('/calcular-das', autenticar, (req, res) => {
-  const fat = db.prepare("SELECT COALESCE(SUM(valor),0) as t FROM pagamentos WHERE usuario_id = ? AND status = 'aprovado' AND criado_em >= date('now','start of month')").get(req.usuario.id);
+router.get('/calcular-das', autenticar, async (req, res) => {
+  const fat = await db.query("SELECT COALESCE(SUM(valor),0) as t FROM pagamentos WHERE usuario_id = $1 AND status = 'aprovado' AND criado_em >= date_trunc('month', NOW())", [req.usuario.id]);
   const dasMEI = 75.00;
-  res.json({ das_mei: dasMEI, faturamento_mes: fat.t, vencimento: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 20).toISOString().split('T')[0] });
+  const vencimento = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 20).toISOString().split('T')[0];
+  res.json({ das_mei: dasMEI, faturamento_mes: fat.rows[0].t, vencimento });
 });
 
-// Alerta de limite MEI
-router.get('/alerta-limite-mei', autenticar, (req, res) => {
-  const fatAno = db.prepare("SELECT COALESCE(SUM(valor),0) as t FROM pagamentos WHERE usuario_id = ? AND status = 'aprovado' AND criado_em >= date('now','start of year')").get(req.usuario.id);
+router.get('/alerta-limite-mei', autenticar, async (req, res) => {
+  const fatAno = await db.query("SELECT COALESCE(SUM(valor),0) as t FROM pagamentos WHERE usuario_id = $1 AND status = 'aprovado' AND criado_em >= date_trunc('year', NOW())", [req.usuario.id]);
   const limite = 81000;
-  const percentual = ((fatAno.t / limite) * 100).toFixed(1);
-  res.json({ faturamento_ano: fatAno.t, limite, percentual, alerta: percentual >= 80 });
+  const percentual = ((fatAno.rows[0].t / limite) * 100).toFixed(1);
+  res.json({ faturamento_ano: fatAno.rows[0].t, limite, percentual, alerta: percentual >= 80 });
 });
 
-// Resumo fiscal mensal
-router.get('/resumo-mensal', autenticar, (req, res) => {
+router.get('/resumo-mensal', autenticar, async (req, res) => {
   const mes = new Date().toISOString().substring(0, 7);
-  const guias = db.prepare("SELECT tipo, SUM(valor) as total FROM guias_emitidas WHERE empresa_id = ? AND data_vencimento LIKE ? GROUP BY tipo").all(req.usuario.id, mes + '%');
-  const folha = db.prepare("SELECT SUM(salario_bruto) as total FROM folha_pagamento fp JOIN funcionarios f ON fp.funcionario_id = f.id WHERE f.empresa_id = ? AND fp.mes_referencia = ?").get(req.usuario.id, mes);
-  res.json({ mes, guias, total_folha: folha?.total || 0 });
+  const guias = await db.query("SELECT tipo, SUM(valor) as total FROM guias_emitidas WHERE empresa_id = $1 AND data_vencimento LIKE $2 GROUP BY tipo", [req.usuario.id, mes + '%']);
+  const folha = await db.query("SELECT SUM(salario_bruto) as total FROM folha_pagamento fp JOIN funcionarios f ON fp.funcionario_id = f.id WHERE f.empresa_id = $1 AND fp.mes_referencia = $2", [req.usuario.id, mes]);
+  res.json({ mes, guias: guias.rows, total_folha: folha.rows[0]?.total || 0 });
 });
 
 module.exports = router;
