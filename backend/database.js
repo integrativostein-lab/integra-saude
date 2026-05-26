@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
@@ -634,6 +635,19 @@ async function criarTabelas() {
         criado_em TIMESTAMP DEFAULT NOW()
       );
     `);
+
+      await client.query(`
+    CREATE TABLE IF NOT EXISTS acs_visitas (
+      id SERIAL PRIMARY KEY,
+      agente_id INTEGER REFERENCES usuarios(id),
+      paciente_id INTEGER REFERENCES usuarios(id),
+      data_visita TEXT,
+      observacoes TEXT,
+      condicoes TEXT,
+      coordenadas TEXT,
+      criado_em TIMESTAMP DEFAULT NOW()
+    );
+  `);
 
     await client.query(`
       CREATE TABLE IF NOT EXISTS extratos_bancarios (

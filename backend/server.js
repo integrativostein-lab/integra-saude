@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 // Rotas
 const authRoutes = require('./rotas/auth');
 const usuarioRoutes = require('./rotas/usuarios');
+const susRoutes = require('./rotas/sus');
 const agendamentoRoutes = require('./rotas/agendamentos');
 const profissionalRoutes = require('./rotas/profissionais');
 const financeiroRoutes = require('./rotas/financeiro');
@@ -51,11 +52,14 @@ const migracaoRoutes = require('./rotas/migracao');
 const googleCalendarRoutes = require('./rotas/google-calendar');
 const gatewaysRoutes = require('./rotas/gateways');
 const conciliacaoRoutes = require('./rotas/conciliacao');
+const acsRoutes = require('./rotas/acs');
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/agendamentos', agendamentoRoutes);
 app.use('/api/profissionais', profissionalRoutes);
+app.use('/api/sus', susRoutes);
 app.use('/api/financeiro', financeiroRoutes);
 app.use('/api/loja', lojaRoutes);
 app.use('/api/yoga', yogaRoutes);
@@ -72,13 +76,36 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/mensagens', mensagensRoutes);
 app.use('/api/migracao', migracaoRoutes);
 app.use('/api/google-calendar', googleCalendarRoutes);
+app.use('/api/acs', acsRoutes)
 app.use('/api/gateways', gatewaysRoutes);
 app.use('/api/conciliacao', conciliacaoRoutes);
+
 
 console.log('✅ Todas as rotas carregadas');
 
 app.use((err, req, res, next) => { res.status(500).json({ erro: 'Erro interno' }); });
 app.use('*', (req, res) => { res.status(404).json({ erro: 'Rota não encontrada' }); });
+
+const { executarAtualizacaoSemanal } = require('./servicos/atualizacao-semanal');
+
+// Agendar para toda segunda-feira às 03:00
+setInterval(() => {
+  const hoje = new Date();
+  if (hoje.getDay() === 1 && hoje.getHours() === 3 && hoje.getMinutes() === 0) {
+    executarAtualizacaoSemanal();
+  }
+}, 60000); // Verifica a cada minuto
+
+const { executarMonitoramentoANVISA } = require('./servicos/anvisa-monitor');
+
+// Executar junto com a atualização semanal (segunda-feira 03:00)
+setInterval(() => {
+  const hoje = new Date();
+  if (hoje.getDay() === 1 && hoje.getHours() === 3 && hoje.getMinutes() === 5) {
+    console.log('🏛️ Executando monitoramento ANVISA...');
+    executarMonitoramentoANVISA();
+  }
+}, 60000);
 
 app.listen(PORT, () => {
   console.log('🌿 Integrativo.App - Rodando na porta ' + PORT);
