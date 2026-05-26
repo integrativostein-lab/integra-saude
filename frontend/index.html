@@ -3,43 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Encontre terapeutas integrativos. Ayurveda, MTC, Fitoterapia, Massoterapia, Yoga e muito mais. Agende online ou presencial. Baixe nosso App grátis.">
-  <meta name="theme-color" content="#1B4332">
-  <title>Integra — Saúde Integrativa | Encontre seu Terapeuta</title>
+  <meta name="description" content="Integrativo.App — 30 bibliotecas terapêuticas. Encontre profissionais de saúde integrativa. Agende online ou presencial.">
+  <meta name="theme-color" content="#1A365D">
+  <title>Integrativo.App — Saúde Integrativa</title>
   <link rel="stylesheet" href="css/estilo.css">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231A365D'/><text x='50' y='55' text-anchor='middle' font-size='40'>🌿</text></svg>">
   <style>
-    .hero-pacientes { background: linear-gradient(rgba(27,67,50,0.75), rgba(27,67,50,0.75)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=800&fit=crop'); background-size: cover; background-position: center; color: #FFF; padding: 100px 40px; text-align: center; }
-    .hero-pacientes h1 { font-size: 42px; margin-bottom: 16px; font-weight: 300; letter-spacing: -0.5px; }
-    .hero-pacientes p { font-size: 17px; opacity: 0.85; max-width: 600px; margin: 0 auto 28px; }
-    .app-banner { background: rgba(255,255,255,0.10); border-radius: 14px; padding: 18px 28px; max-width: 450px; margin: 30px auto 0; backdrop-filter: blur(6px); display: flex; align-items: center; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .app-banner p { margin: 0; font-size: 14px; opacity: 0.9; }
-    .secao-como { background: #FFF; padding: 80px 40px; text-align: center; }
-    .secao-como h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 40px; }
+    .hero-pacientes { background: linear-gradient(rgba(26,54,93,0.80), rgba(26,54,93,0.80)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=800&fit=crop'); background-size: cover; background-position: center; color: #FFF; padding: 100px 40px; display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap; }
+    .hero-texto { max-width: 500px; }
+    .hero-texto h1 { font-size: 42px; margin-bottom: 16px; font-weight: 300; letter-spacing: -0.5px; }
+    .hero-texto p { font-size: 17px; opacity: 0.85; margin-bottom: 28px; }
+    .hero-mockup { width: 320px; height: 620px; background: #111; border-radius: 40px; padding: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.30); flex-shrink: 0; }
+    .mockup-tela { background: #FFF; border-radius: 28px; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 14px; text-align: center; padding: 20px; color: #1A202C; }
+    .app-banner { background: rgba(255,255,255,0.10); border-radius: 14px; padding: 16px 24px; max-width: 420px; margin: 24px 0 0; backdrop-filter: blur(6px); display: flex; align-items: center; gap: 14px; }
+    .app-banner p { margin: 0; font-size: 13px; opacity: 0.9; }
     .passos { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; }
-    .passo { max-width: 220px; }
-    .passo .icone { font-size: 42px; margin-bottom: 12px; }
-    .passo h3 { color: #1B4332; font-size: 18px; margin-bottom: 6px; }
-    .passo p { color: #666; font-size: 14px; }
-    .secao-espec { background: #F5F0E8; padding: 80px 40px; text-align: center; }
-    .secao-espec h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 40px; }
-    .grid-espec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 900px; margin: 0 auto; }
-    .card-espec { background: #FFF; padding: 24px 16px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s; }
-    .card-espec:hover { transform: translateY(-3px); }
-    .card-espec .icone { font-size: 30px; margin-bottom: 8px; }
-    .card-espec h4 { color: #1B4332; font-size: 15px; }
-    .secao-app { background: #E8F0E8; padding: 80px 40px; text-align: center; }
-    .secao-app h2 { color: #1B4332; font-weight: 300; font-size: 30px; margin-bottom: 16px; }
-    .secao-app p { color: #555; max-width: 550px; margin: 0 auto 24px; }
-    @media (max-width: 768px) {
-      .hero-pacientes h1 { font-size: 28px; }
-      .grid-espec { grid-template-columns: repeat(2, 1fr); }
-    }
+    .passo { max-width: 220px; text-align: center; }
+    .passo img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; margin-bottom: 12px; }
+    .passo h3 { color: #1A365D; font-size: 16px; margin-bottom: 4px; }
+    .passo p { color: #666; font-size: 13px; }
+    .carrossel-espec { overflow: hidden; position: relative; max-width: 900px; margin: 30px auto 0; }
+    .carrossel-track { display: flex; }
+    .carrossel-item { min-width: 180px; text-align: center; padding: 0 10px; }
+    .carrossel-item img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; }
+    .carrossel-item .legenda { margin-top: 6px; font-weight: 600; color: #1A365D; font-size: 13px; }
+    .carrossel-btn { position: absolute; top: 35%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.10); z-index: 2; color: #1A365D; }
+    .carrossel-btn:hover { background: #FFF; }
+    .carrossel-btn.left { left: -5px; }
+    .carrossel-btn.right { right: -5px; }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="logo">🌿 Integrativo<span>.</span>App</div>
     <div class="menu">
       <a href="#especialidades">Especialidades</a>
       <a href="#como-funciona">Como Funciona</a>
@@ -50,51 +47,68 @@
   </nav>
 
   <section class="hero-pacientes">
-    <h1>Encontre seu terapeuta integrativo</h1>
-    <p>Ayurveda · MTC · Fitoterapia · Massoterapia · Yoga · Xamanismo e muito mais. Agende consultas online ou presenciais.</p>
-    <a href="busca.html" class="btn btn-primario" style="font-size:16px;padding:14px 32px;">Buscar Profissionais</a>
-    <div class="app-banner">
-      <span style="font-size:28px;">📱</span>
-      <p>Baixe nosso App grátis. Sem loja de apps. Ocupa menos de 1 MB.</p>
-      <a href="#" class="btn btn-secundario" style="padding:8px 18px;font-size:13px;" onclick="alert('App instalado! (PWA)')">Instalar App</a>
+    <div class="hero-texto fade-in">
+      <h1>Encontre seu profissional integrativo</h1>
+      <p>30 especialidades. Ayurveda · MTC · Fitoterapia · Yoga · Quiropraxia · Acupuntura e muito mais. Agende online ou presenciais.</p>
+      <a href="busca.html" class="btn btn-primario" style="font-size:16px;padding:14px 32px;">Buscar Profissionais</a>
+      <div class="app-banner">
+        <span style="font-size:26px;">📱</span>
+        <p>Baixe nosso App grátis. Sem loja de apps. Ocupa menos de 1 MB.</p>
+        <a href="#" class="btn btn-secundario" style="padding:8px 16px;font-size:12px;" onclick="alert('App instalado! (PWA)')">Instalar App</a>
+      </div>
+    </div>
+    <div class="hero-mockup fade-in">
+      <div class="mockup-tela" id="mockup-paciente">
+        <div style="text-align:center;"><div style="font-size:40px;">🌿</div><div style="font-weight:600;color:#1A365D;">Integrativo.App</div></div>
+      </div>
     </div>
   </section>
 
-  <section class="secao-como" id="como-funciona">
+  <section style="background:#E8F0E8; padding:80px 40px; text-align:center;" id="como-funciona">
     <h2>Como Funciona</h2>
     <div class="passos">
-      <div class="passo"><div class="icone">🔍</div><h3>Busque</h3><p>Filtre por especialidade, CEP e modalidade</p></div>
-      <div class="passo"><div class="icone">📅</div><h3>Agende</h3><p>Escolha o melhor horário em segundos</p></div>
-      <div class="passo"><div class="icone">🌿</div><h3>Consulte</h3><p>Online ou presencial, com lembretes</p></div>
+      <div class="passo"><img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e79?w=60&h=60&fit=crop" alt="Buscar"><h3>Busque</h3><p>Filtre por especialidade, CEP e modalidade</p></div>
+      <div class="passo"><img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=60&h=60&fit=crop" alt="Agendar"><h3>Agende</h3><p>Escolha o melhor horário em segundos</p></div>
+      <div class="passo"><img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=60&h=60&fit=crop" alt="Consultar"><h3>Consulte</h3><p>Online ou presencial, com lembretes</p></div>
     </div>
   </section>
 
-  <section class="secao-espec" id="especialidades">
-    <h2>Especialidades</h2>
-    <div class="grid-espec">
-      <div class="card-espec"><div class="icone">🌿</div><h4>Fitoterapia</h4></div>
-      <div class="card-espec"><div class="icone">🕉️</div><h4>Ayurveda</h4></div>
-      <div class="card-espec"><div class="icone">🏮</div><h4>MTC</h4></div>
-      <div class="card-espec"><div class="icone">💆</div><h4>Massoterapia</h4></div>
-      <div class="card-espec"><div class="icone">🧘</div><h4>Yoga</h4></div>
-      <div class="card-espec"><div class="icone">🦴</div><h4>Fisioterapia</h4></div>
-      <div class="card-espec"><div class="icone">🔮</div><h4>Xamanismo</h4></div>
-      <div class="card-espec"><div class="icone">🧴</div><h4>Aromaterapia</h4></div>
+  <section style="background:#F5F0E8; padding:80px 40px; text-align:center;" id="especialidades">
+    <h2>30 Especialidades</h2>
+    <div class="carrossel-espec" id="carrosselEspec">
+      <button class="carrossel-btn left" onclick="moverEspec(-1)">‹</button>
+      <div class="carrossel-track" id="carrosselEspecTrack">
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200&h=120&fit=crop" alt="Fitoterapia"><div class="legenda">🌿 Fitoterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&h=120&fit=crop" alt="Yoga"><div class="legenda">🧘 Yoga</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=120&fit=crop" alt="Massoterapia"><div class="legenda">💆 Massoterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=120&fit=crop" alt="Fisioterapia"><div class="legenda">🦴 Fisioterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=200&h=120&fit=crop" alt="Acupuntura"><div class="legenda">📍 Acupuntura</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=200&h=120&fit=crop" alt="Aromaterapia"><div class="legenda">🧴 Aromaterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=200&h=120&fit=crop" alt="Medicina"><div class="legenda">🩺 Medicina Integrativa</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1512069772995-ec65ed45afd2?w=200&h=120&fit=crop" alt="Quiropraxia"><div class="legenda">🦴 Quiropraxia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=120&fit=crop" alt="Osteopatia"><div class="legenda">👐 Osteopatia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=200&h=120&fit=crop" alt="Musicoterapia"><div class="legenda">🎵 Musicoterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=200&h=120&fit=crop" alt="Hidroterapia"><div class="legenda">💧 Hidroterapia</div></div>
+        <div class="carrossel-item"><img src="https://images.unsplash.com/photo-1591343395082-e120087004b4?w=200&h=120&fit=crop" alt="Apiterapia"><div class="legenda">🐝 Apiterapia</div></div>
+      </div>
+      <button class="carrossel-btn right" onclick="moverEspec(1)">›</button>
     </div>
   </section>
 
-  <section class="secao-app">
+  <section style="background:#EBF4FF; padding:80px 40px; text-align:center;">
     <h2>Baixe nosso App</h2>
-    <p>O Integra é um PWA. Instale em segundos no seu celular ou computador. Funciona offline, ocupa menos de 1 MB e está sempre atualizado.</p>
-    <a href="#" class="btn btn-primario" style="font-size:16px;padding:14px 32px;" onclick="alert('App instalado! (PWA)')">Instalar App Grátis</a>
+    <p style="color:#4A5568;">O Integrativo.App é um PWA. Instale em segundos no seu celular ou computador. Funciona offline e está sempre atualizado.</p>
+    <a href="#" class="btn btn-primario" style="font-size:16px;padding:14px 32px;margin-top:16px;" onclick="alert('App instalado! (PWA)')">Instalar App Grátis</a>
   </section>
 
   <footer>
-    <p>🌿 Integra — Saúde Integrativa &copy; 2026</p>
+    <p>🌿 Integrativo.App — Saúde Integrativa &copy; 2026</p>
     <p style="margin-top:8px;font-size:12px;">
-      <a href="termos.html">Termos de Uso</a> &nbsp;|&nbsp;
-      <a href="privacidade.html">Política de Privacidade</a> &nbsp;|&nbsp;
-      <a href="manual.html">Manual de Uso</a>
+      <a href="termos.html">Termos</a> &nbsp;|&nbsp;
+      <a href="privacidade.html">Privacidade</a> &nbsp;|&nbsp;
+      <a href="etica.html">Ética</a> &nbsp;|&nbsp;
+      <a href="missao.html">Missão</a> &nbsp;|&nbsp;
+      <a href="manual.html">Manual</a>
     </p>
   </footer>
 
@@ -102,5 +116,32 @@
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
   <script src="js/audio-ambiente.js"></script>
+  <script>
+    var track = document.getElementById('carrosselEspecTrack');
+    var items = track.children;
+    var itemWidth = 190;
+    var pos = 0;
+    for (var i = 0; i < 4; i++) { track.appendChild(items[i].cloneNode(true)); }
+    function animar() {
+      pos += 1;
+      track.style.transform = 'translateX(-' + pos + 'px)';
+      if (pos >= (items.length - 3) * itemWidth) {
+        setTimeout(function() {
+          track.style.transition = 'none';
+          pos = 0;
+          track.style.transform = 'translateX(0)';
+          setTimeout(function() { track.style.transition = 'transform 0.5s ease'; }, 50);
+        }, 500);
+      }
+    }
+    setInterval(animar, 40);
+    function moverEspec(dir) { pos += dir * itemWidth * 3; if (pos < 0) pos = 0; track.style.transform = 'translateX(-' + pos + 'px)'; }
+    var telas = ['🔍 Buscar', '📅 Agendar', '📱 Teleconsulta', '🛒 Loja', '🧘 Yoga'];
+    var telaIdx = 0;
+    setInterval(function() {
+      var el = document.getElementById('mockup-paciente');
+      if (el) { el.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:40px;">' + telas[telaIdx].split(' ')[0] + '</div><div style="font-weight:600;color:#1A365D;">' + telas[telaIdx].substring(2) + '</div></div>'; telaIdx = (telaIdx + 1) % telas.length; }
+    }, 3000);
+  </script>
 </body>
 </html>

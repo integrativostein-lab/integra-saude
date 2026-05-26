@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscar Profissionais - Integra</title>
+  <title>Buscar Profissionais — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
     .busca-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
@@ -17,7 +17,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="logo">🌿 Integrativo<span>.</span>App</div>
     <div class="menu">
       <a href="index.html">Início</a>
       <a href="cadastro.html">Cadastro</a>
@@ -32,16 +32,7 @@
       <div class="form-grupo">
         <label>Especialidade</label>
         <select id="filtro-especialidade">
-          <option value="">Todas</option>
-          <option value="Fitoterapia">Fitoterapia</option>
-          <option value="Ayurveda">Ayurveda</option>
-          <option value="MTC">MTC</option>
-          <option value="Massoterapia">Massoterapia</option>
-          <option value="Yoga">Yoga</option>
-          <option value="Fisioterapia">Fisioterapia</option>
-          <option value="Acupuntura">Acupuntura</option>
-          <option value="Psicologia">Psicologia</option>
-          <option value="Nutrição">Nutrição</option>
+          <option value="">Todas (30 especialidades)</option>
         </select>
       </div>
       <div class="form-grupo">
@@ -50,7 +41,12 @@
           <option value="">Todas</option>
           <option value="online">Online</option>
           <option value="presencial">Presencial</option>
+          <option value="domiciliar">Domiciliar</option>
         </select>
+      </div>
+      <div class="form-grupo">
+        <label>CEP</label>
+        <input type="text" id="filtro-cep" placeholder="01310-100">
       </div>
       <button class="btn btn-primario" onclick="buscar()">Buscar</button>
     </div>
@@ -60,37 +56,45 @@
 
   <script src="js/config.js"></script>
   <script>
+    var select = document.getElementById('filtro-especialidade');
+    CONFIG.ESPECIALIDADES.forEach(function(esp) {
+      var opt = document.createElement('option');
+      opt.value = esp;
+      opt.textContent = esp;
+      select.appendChild(opt);
+    });
+
     async function buscar() {
-      const esp = document.getElementById('filtro-especialidade').value;
-      const mod = document.getElementById('filtro-modalidade').value;
-      const params = new URLSearchParams();
+      var esp = document.getElementById('filtro-especialidade').value;
+      var mod = document.getElementById('filtro-modalidade').value;
+      var cep = document.getElementById('filtro-cep').value;
+      var params = new URLSearchParams();
       if (esp) params.append('especialidade', esp);
       if (mod) params.append('modalidade', mod);
+      if (cep) params.append('cep', cep);
 
-      const r = await fetch(`${CONFIG.API_URL}/profissionais/buscar?${params.toString()}`);
-      const dados = await r.json();
-
-      const div = document.getElementById('resultados');
+      var r = await fetch(`${CONFIG.API_URL}/profissionais/buscar?${params.toString()}`);
+      var dados = await r.json();
+      var div = document.getElementById('resultados');
 
       if (dados.length === 0) {
         div.innerHTML = '<div class="sem-resultados">Nenhum profissional encontrado.</div>';
         return;
       }
 
-      div.innerHTML = dados.map(p => `
+      div.innerHTML = dados.map(function(p) {
+        return `
         <div class="resultado-card">
           <div>
             <h3>${p.nome}</h3>
-            <p>${p.especialidades_lista?.join(', ') || 'Não informado'}</p>
+            <p>${p.especialidades_lista ? p.especialidades_lista.join(', ') : 'Não informado'}</p>
             <p>${p.cidade || ''} ${p.estado || ''}</p>
-            <p>🟢 Online: ${p.atende_online ? 'Sim' : 'Não'} | 📍 Presencial: ${p.atende_presencial ? 'Sim' : 'Não'}</p>
-            ${p.valores?.length ? p.valores.map(v => `<span style="font-size:12px;color:var(--laranja);">${v.especialidade_nome}: Online R$${v.valor_online} | Presencial R$${v.valor_presencial}</span>`).join('<br>') : '<p style="font-size:12px;">Valores não configurados</p>'}
+            <p>🟢 Online: ${p.atende_online ? 'Sim' : 'Não'} | 📍 Presencial: ${p.atende_presencial ? 'Sim' : 'Não'} | 🏠 Domiciliar: ${p.atende_domiciliar ? 'Sim' : 'Não'}</p>
           </div>
-          <a href="#" class="btn btn-primario" style="font-size:13px;">Agendar</a>
-        </div>
-      `).join('');
+          <a href="agendamento.html?prof=${p.id}" class="btn btn-primario" style="font-size:13px;">Agendar</a>
+        </div>`;
+      }).join('');
     }
-
     buscar();
   </script>
 </body>

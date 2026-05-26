@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro - Integra</title>
+  <title>Cadastro — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
     .form-cadastro { max-width: 500px; margin: 40px auto; background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); }
@@ -14,12 +14,14 @@
     .senha-wrapper { position: relative; }
     .senha-wrapper input { width: 100%; padding-right: 40px; }
     .senha-wrapper .olhinho { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; }
+    .espec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; font-size: 12px; }
+    .espec-grid label { font-weight: 400; }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integra<span>.</span></div>
-    <div class="menu"><a href="index.html">Início</a></div>
+    <div class="logo">🌿 Integrativo<span>.</span>App</div>
+    <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a></div>
   </nav>
 
   <div class="form-cadastro">
@@ -45,13 +47,31 @@
       <label>Tipo de Conta *</label>
       <select id="tipo">
         <option value="paciente">Paciente</option>
-        <option value="terapeuta">Terapeuta</option>
-        <option value="rh">RH (Clínica)</option>
+        <option value="profissional">Profissional</option>
       </select>
+      <p style="font-size:11px;color:var(--texto-medio);margin-top:4px;">Recepcionista, RH e Financeiro são criados internamente pelo Admin da clínica.</p>
     </div>
     <div class="form-grupo" id="grupo-especialidades" style="display:none;">
-      <label>Especialidades (separe por vírgulas)</label>
-      <input type="text" id="especialidades" placeholder="Fitoterapia, Ayurveda, MTC">
+      <label>Especialidades (marque as que atua)</label>
+      <div class="espec-grid" id="espec-grid"></div>
+    </div>
+    <div class="form-grupo" id="grupo-domiciliar" style="display:none;">
+      <label>Atendimento Domiciliar</label>
+      <select id="domiciliar">
+        <option value="nao">Não atendo a domicílio</option>
+        <option value="sim">Sim, atendo a domicílio</option>
+      </select>
+      <div id="grupo-domiciliar-valor" style="display:none;margin-top:8px;">
+        <label>Tipo de cobrança domiciliar</label>
+        <select id="domiciliar-tipo" onchange="toggleDomiciliarValor()">
+          <option value="fixo">Valor fixo</option>
+          <option value="a_partir_de">A partir de</option>
+          <option value="a_combinar">A combinar</option>
+        </select>
+        <div id="domiciliar-valor-fixo" style="margin-top:6px;">
+          <input type="number" id="domiciliar-valor" placeholder="R$ 0,00" step="0.01">
+        </div>
+      </div>
     </div>
 
     <button class="btn btn-primario" onclick="cadastrar()" style="width:100%;margin-top:10px;">Criar Conta</button>
@@ -59,6 +79,7 @@
   </div>
 
   <script src="js/config.js"></script>
+  <script src="js/voz.js"></script>
   <script>
     function toggleSenha() {
       var s = document.getElementById('senha');
@@ -68,8 +89,32 @@
     }
 
     document.getElementById('tipo').addEventListener('change', function() {
-      document.getElementById('grupo-especialidades').style.display = this.value === 'terapeuta' ? 'block' : 'none';
+      var grupo = document.getElementById('grupo-especialidades');
+      var dom = document.getElementById('grupo-domiciliar');
+      if (this.value === 'profissional') {
+        grupo.style.display = 'block';
+        dom.style.display = 'block';
+        if (document.getElementById('espec-grid').children.length === 0) {
+          var html = '';
+          CONFIG.ESPECIALIDADES.forEach(function(esp) {
+            html += '<label><input type="checkbox" class="espec-check" value="' + esp + '"> ' + esp + '</label>';
+          });
+          document.getElementById('espec-grid').innerHTML = html;
+        }
+      } else {
+        grupo.style.display = 'none';
+        dom.style.display = 'none';
+      }
     });
+
+    document.getElementById('domiciliar').addEventListener('change', function() {
+      document.getElementById('grupo-domiciliar-valor').style.display = this.value === 'sim' ? 'block' : 'none';
+    });
+
+    function toggleDomiciliarValor() {
+      var tipo = document.getElementById('domiciliar-tipo').value;
+      document.getElementById('domiciliar-valor-fixo').style.display = tipo === 'a_combinar' ? 'none' : 'block';
+    }
 
     async function cadastrar() {
       var msg = document.getElementById('msg');
@@ -83,7 +128,6 @@
       var email = document.getElementById('email').value.trim();
       var senha = document.getElementById('senha').value.trim();
       var tipo = document.getElementById('tipo').value;
-      var especialidadesRaw = document.getElementById('especialidades').value.trim();
 
       if (!nome || !email || !senha) {
         msg.className = 'msg erro';
@@ -99,11 +143,20 @@
 
       var body = { nome: nome, email: email, senha: senha, tipo: tipo, lgpd_consentimento: 1 };
 
-      if (tipo === 'terapeuta') {
+      if (tipo === 'profissional') {
         body.atende_online = 1;
         body.atende_presencial = 1;
-        if (especialidadesRaw) {
-          body.especialidades = JSON.stringify(especialidadesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0));
+        var checks = document.querySelectorAll('.espec-check:checked');
+        var especs = [];
+        checks.forEach(function(c) { especs.push(c.value); });
+        if (especs.length > 0) body.especialidades = JSON.stringify(especs);
+
+        if (document.getElementById('domiciliar').value === 'sim') {
+          body.atende_domiciliar = 1;
+          body.domiciliar_tipo = document.getElementById('domiciliar-tipo').value;
+          if (body.domiciliar_tipo !== 'a_combinar') {
+            body.domiciliar_valor = parseFloat(document.getElementById('domiciliar-valor').value) || 0;
+          }
         }
       }
 
