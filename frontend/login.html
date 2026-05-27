@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Integra</title>
+  <title>Login — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
     .form-login { max-width: 420px; margin: 60px auto; background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); }
@@ -18,7 +18,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit;">🌿 Integrativo<span>.</span>App</a></div>
     <div class="menu"><a href="index.html">Início</a></div>
   </nav>
 
@@ -28,7 +28,7 @@
     
     <div class="form-grupo">
       <label>Email</label>
-      <input type="email" id="email" placeholder="admin@integra.com" required>
+      <input type="email" id="email" placeholder="seu@email.com" required>
     </div>
     <div class="form-grupo">
       <label>Senha</label>
@@ -39,7 +39,10 @@
     </div>
 
     <button class="btn btn-primario" onclick="login()" style="width:100%;margin-top:10px;">Entrar</button>
-    <p style="text-align:center;margin-top:16px;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    <p style="text-align:center;margin-top:12px;font-size:13px;">
+      <a href="#" onclick="esqueciSenha()">Esqueci minha senha</a>
+    </p>
+    <p style="text-align:center;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
   </div>
 
   <script src="js/config.js"></script>
@@ -49,6 +52,18 @@
       var btn = document.querySelector('.olhinho');
       if (s.type === 'password') { s.type = 'text'; btn.textContent = '🙈'; }
       else { s.type = 'password'; btn.textContent = '👁️'; }
+    }
+
+    function esqueciSenha() {
+      var email = document.getElementById('email').value.trim();
+      if (!email) { alert('Digite seu email primeiro.'); return; }
+      fetch(`${CONFIG.API_URL}/auth/recuperar-senha`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      }).then(r => r.json()).then(d => {
+        alert(d.mensagem || 'Verifique seu email.');
+      });
     }
 
     async function login() {
@@ -77,18 +92,20 @@
         if (r.ok) {
           localStorage.setItem('integra_token', d.token);
           localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
-          msg.className = 'msg sucesso';
-if (d.usuario.tipo === 'paciente') {
-  msg.innerHTML = '✅ Login realizado! <a href="painel-paciente.html">Ir para meu painel</a>';
-} else {
-  msg.innerHTML = '✅ Login realizado! <a href="painel-terapeuta.html">Ir para meu painel</a>';
-}        } else {
+          
+          // Redirecionar para o dashboard correto
+          var tipo = d.usuario.tipo;
+          if (tipo === 'paciente') window.location.href = 'painel-paciente.html';
+          else if (tipo === 'rh') window.location.href = 'painel-rh.html';
+          else if (tipo === 'admin' || tipo === 'super_admin') window.location.href = 'painel-criador.html';
+          else window.location.href = 'painel-terapeuta.html';
+        } else {
           msg.className = 'msg erro';
           msg.textContent = d.erro || 'Erro ao fazer login.';
         }
       } catch(e) {
         msg.className = 'msg erro';
-        msg.textContent = 'Erro de conexão. O servidor está rodando?';
+        msg.textContent = 'Erro de conexão.';
       }
     }
   </script>

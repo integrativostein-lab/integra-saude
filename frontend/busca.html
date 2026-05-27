@@ -17,7 +17,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integrativo<span>.</span>App</div>
+    <div class="logo"><a href="painel-paciente.html" style="text-decoration:none;color:inherit;">🌿 Integrativo<span>.</span>App</a></div>
     <div class="menu">
       <a href="index.html">Início</a>
       <a href="cadastro.html">Cadastro</a>
@@ -41,12 +41,20 @@
           <option value="">Todas</option>
           <option value="online">Online</option>
           <option value="presencial">Presencial</option>
-          <option value="domiciliar">Domiciliar</option>
         </select>
       </div>
       <div class="form-grupo">
         <label>CEP</label>
         <input type="text" id="filtro-cep" placeholder="01310-100">
+      </div>
+      <div class="form-grupo">
+        <label>Ordenar por</label>
+        <select id="filtro-ordem">
+          <option value="relevancia">Mais relevantes</option>
+          <option value="distancia">Mais próximos</option>
+          <option value="preco_menor">Menor preço</option>
+          <option value="preco_maior">Maior preço</option>
+        </select>
       </div>
       <button class="btn btn-primario" onclick="buscar()">Buscar</button>
     </div>
@@ -68,10 +76,12 @@
       var esp = document.getElementById('filtro-especialidade').value;
       var mod = document.getElementById('filtro-modalidade').value;
       var cep = document.getElementById('filtro-cep').value;
+      var ordem = document.getElementById('filtro-ordem').value;
       var params = new URLSearchParams();
       if (esp) params.append('especialidade', esp);
       if (mod) params.append('modalidade', mod);
       if (cep) params.append('cep', cep);
+      if (ordem) params.append('ordem', ordem);
 
       var r = await fetch(`${CONFIG.API_URL}/profissionais/buscar?${params.toString()}`);
       var dados = await r.json();
@@ -83,13 +93,16 @@
       }
 
       div.innerHTML = dados.map(function(p) {
+        var valores = p.valores ? p.valores.map(function(v) {
+          return '<span style="font-size:12px;color:var(--laranja);">' + v.espec_nome + ': Online R$' + (v.valor_online||0) + ' | Presencial R$' + (v.valor_presencial||0) + '</span>';
+        }).join('<br>') : '';
         return `
         <div class="resultado-card">
           <div>
             <h3>${p.nome}</h3>
             <p>${p.especialidades_lista ? p.especialidades_lista.join(', ') : 'Não informado'}</p>
             <p>${p.cidade || ''} ${p.estado || ''}</p>
-            <p>🟢 Online: ${p.atende_online ? 'Sim' : 'Não'} | 📍 Presencial: ${p.atende_presencial ? 'Sim' : 'Não'} | 🏠 Domiciliar: ${p.atende_domiciliar ? 'Sim' : 'Não'}</p>
+            ${valores}
           </div>
           <a href="agendamento.html?prof=${p.id}" class="btn btn-primario" style="font-size:13px;">Agendar</a>
         </div>`;
