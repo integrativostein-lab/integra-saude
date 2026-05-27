@@ -9,6 +9,9 @@ const fs = require('fs');
 
 const db = require('./database');
 
+// Criar tabelas na primeira execução
+const { criarTabelas, inserirDadosIniciais } = require('./database');
+criarTabelas().then(() => inserirDadosIniciais()).catch(err => console.error('Erro ao inicializar banco:', err));
 // Forçar criação das tabelas no startup
 (async () => {
   try {

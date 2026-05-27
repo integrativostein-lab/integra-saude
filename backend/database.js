@@ -725,6 +725,5 @@ async function inicializarBanco() {
   console.log('🎉 Banco de dados pronto para uso!');
 }
 
-inicializarBanco();
 
 module.exports = db;
