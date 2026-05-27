@@ -9,6 +9,16 @@ const fs = require('fs');
 
 const db = require('./database');
 
+// Forçar criação das tabelas no startup
+(async () => {
+  try {
+    await db.query('SELECT 1');
+    console.log('✅ Banco de dados conectado e verificado');
+  } catch (err) {
+    console.error('❌ Erro ao conectar no banco:', err.message);
+  }
+})();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,13 +38,7 @@ app.get('/', (req, res) => {
   res.json({ sistema: 'Integrativo.App - Saúde Integrativa', versao: '1.0.0', status: 'online' });
 });
 
-// Forçar criação das tabelas no startup
-const db = require('./database');
-db.query('SELECT 1').then(() => {
-  console.log('✅ Banco de dados conectado e tabelas verificadas');
-}).catch(err => {
-  console.error('❌ Erro ao conectar no banco:', err.message);
-});
+
 
 // Rotas
 const authRoutes = require('./rotas/auth');
