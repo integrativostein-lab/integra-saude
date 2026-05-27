@@ -28,6 +28,14 @@ app.get('/', (req, res) => {
   res.json({ sistema: 'Integrativo.App - Saúde Integrativa', versao: '1.0.0', status: 'online' });
 });
 
+// Forçar criação das tabelas no startup
+const db = require('./database');
+db.query('SELECT 1').then(() => {
+  console.log('✅ Banco de dados conectado e tabelas verificadas');
+}).catch(err => {
+  console.error('❌ Erro ao conectar no banco:', err.message);
+});
+
 // Rotas
 const authRoutes = require('./rotas/auth');
 const usuarioRoutes = require('./rotas/usuarios');
