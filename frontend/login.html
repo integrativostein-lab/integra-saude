@@ -78,8 +78,11 @@
           localStorage.setItem('integra_token', d.token);
           localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
           msg.className = 'msg sucesso';
-          msg.innerHTML = '✅ Login realizado! <a href="busca.html">Ir para busca</a>';
-        } else {
+if (d.usuario.tipo === 'paciente') {
+  msg.innerHTML = '✅ Login realizado! <a href="painel-paciente.html">Ir para meu painel</a>';
+} else {
+  msg.innerHTML = '✅ Login realizado! <a href="painel-terapeuta.html">Ir para meu painel</a>';
+}        } else {
           msg.className = 'msg erro';
           msg.textContent = d.erro || 'Erro ao fazer login.';
         }
