@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../database');
+const axios = require('axios');
 
 function autenticar(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -10,40 +11,40 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
-router.post('/', autenticar, async (req, res) => {
-  const { profissional_id, data_agendamento, horario_inicio, modalidade } = req.body;
-  const v = await db.query('SELECT valor_online, valor_presencial, duracao_minutos FROM profissional_valores WHERE usuario_id = $1 LIMIT 1', [profissional_id]);
-  if (v.rows.length === 0) return res.status(400).json({ erro: 'Profissional sem valores' });
-  
-  const valor = modalidade === 'online' ? v.rows[0].valor_online : v.rows[0].valor_presencial;
-  const duracao = v.rows[0].duracao_minutos || 60;
-  const [h, m] = horario_inicio.split(':').map(Number);
-  const totalMin = h * 60 + m + duracao;
-  const fim = `${String(Math.floor(totalMin / 60)).padStart(2, '0')}:${String(totalMin % 60).padStart(2, '0')}`;
+// BUSCAR PROFISSIONAIS
+router.get('/buscar', async (req, res) => {
+  try {
+    const { especialidade, modalidade, cep } = req.query;
+    let q = "SELECT u.id, u.nome, u.registro_profissional, u.cidade, u.estado, u.atende_online, u.atende_presencial, u.especialidades FROM usuarios u WHERE u.ativo = 1 AND u.tipo IN ('profissional','admin')";
+    const params = [];
+    let i = 1;
 
-  const r = await db.query(
-    'INSERT INTO agendamentos (paciente_id, profissional_id, data_agendamento, horario_inicio, horario_fim, modalidade, valor) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
-    [req.usuario.id, profissional_id, data_agendamento, horario_inicio, fim, modalidade, valor]
-  );
-  res.status(201).json({ mensagem: 'Agendado!', id: r.rows[0].id });
+    if (especialidade) { q += ` AND u.especialidades LIKE $${i}`; params.push('%' + especialidade + '%'); i++; }
+    if (modalidade === 'online') q += ' AND u.atende_online = 1';
+    else if (modalidade === 'presencial') { q += ' AND u.atende_presencial = 1'; }
+    q += ' LIMIT 50';
+
+    const result = await db.query(q, params);
+    res.json(result.rows);
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao buscar profissionais' });
+  }
 });
 
-router.get('/meus', autenticar, async (req, res) => {
-  const q = req.usuario.tipo === 'paciente' ? 'a.paciente_id = $1' : 'a.profissional_id = $1';
-  const r = await db.query(`SELECT a.*, u.nome as profissional_nome FROM agendamentos a JOIN usuarios u ON a.profissional_id = u.id WHERE ${q} ORDER BY a.data_agendamento DESC LIMIT 50`, [req.usuario.id]);
-  res.json(r.rows);
-});
-
-router.put('/:id/cancelar', autenticar, async (req, res) => {
-  await db.query("UPDATE agendamentos SET status = 'cancelado', data_cancelamento = NOW() WHERE id = $1", [req.params.id]);
-  res.json({ mensagem: 'Cancelado!' });
-});
-
-router.put('/:id/remarcar', autenticar, async (req, res) => {
-  const { data_agendamento, horario_inicio } = req.body;
-  if (!data_agendamento || !horario_inicio) return res.status(400).json({ erro: 'Data e horário obrigatórios' });
-  await db.query("UPDATE agendamentos SET data_agendamento = $1, horario_inicio = $2, status = 'reagendado' WHERE id = $3 AND paciente_id = $4", [data_agendamento, horario_inicio, req.params.id, req.usuario.id]);
-  res.json({ mensagem: 'Agendamento remarcado!' });
+// CONFIGURAR VALORES
+router.post('/valores', autenticar, async (req, res) => {
+  const { especialidade_id, valor_online, valor_presencial } = req.body;
+  try {
+    const ex = await db.query('SELECT id FROM profissional_valores WHERE usuario_id = $1 AND especialidade_id = $2', [req.usuario.id, especialidade_id]);
+    if (ex.rows.length > 0) {
+      await db.query('UPDATE profissional_valores SET valor_online=$1, valor_presencial=$2 WHERE id=$3', [valor_online, valor_presencial, ex.rows[0].id]);
+    } else {
+      await db.query('INSERT INTO profissional_valores (usuario_id, especialidade_id, valor_online, valor_presencial) VALUES ($1,$2,$3,$4)', [req.usuario.id, especialidade_id, valor_online, valor_presencial]);
+    }
+    res.json({ mensagem: 'Valores salvos!' });
+  } catch (e) {
+    res.status(500).json({ erro: 'Erro ao salvar valores' });
+  }
 });
 
 module.exports = router;
