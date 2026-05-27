@@ -14,7 +14,7 @@
     .manual p, .manual li { color: var(--texto-escuro); line-height: 1.8; }
     .manual .dica { background: var(--laranja-claro); padding: 14px 18px; border-radius: 8px; margin: 14px 0; font-size: 14px; border-left: 4px solid var(--laranja); }
     .manual .alerta { background: #FED7D7; padding: 14px 18px; border-radius: 8px; margin: 14px 0; font-size: 14px; border-left: 4px solid var(--vermelho); }
-    .manual table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .manual table { width: 100%; border-collapse: collapse; margin: 16px 0; border-radius: var(--raio-borda); overflow: hidden; }
     .manual th { background: var(--azul-escuro); color: var(--branco); padding: 10px 14px; text-align: left; font-size: 13px; }
     .manual td { padding: 10px 14px; border-bottom: 1px solid #E2E8F0; font-size: 13px; }
     .pesquisa { margin-bottom: 30px; }
@@ -26,7 +26,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integrativo<span>.</span>App</div>
+    <div class="logo" onclick="window.location.href='painel-terapeuta.html'" style="cursor:pointer;">🌿 Integrativo<span>.</span>App</div>
     <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a> <a href="login.html">Entrar</a></div>
   </nav>
 
@@ -35,7 +35,7 @@
     <p style="text-align:center;color:var(--texto-medio);">"Porque até o sistema mais completo do mundo é inútil se você não souber onde clicar."</p>
 
     <div class="pesquisa">
-      <input type="text" id="busca-manual" placeholder="🔍 Pesquisar no manual... (ex: nota fiscal, yoga, whatsapp)" oninput="pesquisar()">
+      <input type="text" id="busca-manual" placeholder="🔍 Pesquisar no manual... (ex: nota fiscal, whatsapp, certificado)" oninput="pesquisar()">
     </div>
 
     <div class="sumario">
@@ -43,54 +43,148 @@
       <ol>
         <li><a href="#primeiro-acesso">Primeiro Acesso e Cadastro</a></li>
         <li><a href="#perfil">Configurando seu Perfil</a></li>
-        <li><a href="#valores">Valores e Agenda</a></li>
-        <li><a href="#pagamentos">Conectando os Pagamentos</a></li>
-        <li><a href="#whatsapp">Conectando o WhatsApp</a></li>
+        <li><a href="#agenda">Agenda e Valores</a></li>
+        <li><a href="#whatsapp">Conectando o WhatsApp Business</a></li>
+        <li><a href="#pagamentos">Conectando os Pagamentos (Gateways)</a></li>
         <li><a href="#nf">Emitindo Nota Fiscal</a></li>
+        <li><a href="#certificado">Certificado Digital</a></li>
         <li><a href="#loja">Usando a Loja</a></li>
-        <li><a href="#especialidades">30 Bancos Terapêuticos</a></li>
-        <li><a href="#modulos">Módulos Extras (Compra Avulsa)</a></li>
+        <li><a href="#pacientes">Gerenciando Pacientes e Prontuário</a></li>
+        <li><a href="#colaboradores">Cadastrando Colaboradores (Recepcionista, RH, Financeiro)</a></li>
+        <li><a href="#blog">Blog Profissional</a></li>
         <li><a href="#yoga">Módulo Yoga</a></li>
         <li><a href="#massagens">Módulo Massagens</a></li>
         <li><a href="#retornos">Retornos Gratuitos</a></li>
         <li><a href="#contratos">Contratos de Assinatura</a></li>
+        <li><a href="#especialidades">30 Bancos Terapêuticos</a></li>
+        <li><a href="#modulos">Módulos Extras (Compra Avulsa)</a></li>
         <li><a href="#rh">RH, Recepcionista e Financeiro</a></li>
         <li><a href="#revenda">Revenda de Certificado e Domínio</a></li>
         <li><a href="#beneficios">Benefícios de Primeira Assinatura</a></li>
+        <li><a href="#demonstracao">Contas de Demonstração</a></li>
       </ol>
     </div>
 
     <h2 id="primeiro-acesso">1. Primeiro Acesso e Cadastro</h2>
-    <p>Crie sua conta na página de <strong>Cadastro</strong>. Preencha nome, email e senha (use 👁️ para ver a senha). Escolha o tipo de conta:</p>
+    <p>Crie sua conta na página de <strong>Cadastro</strong>. Preencha nome, email e senha. Escolha o tipo de conta:</p>
     <ul>
-      <li><strong>Paciente</strong> — para agendar consultas</li>
-      <li><strong>Profissional</strong> — para atender pacientes</li>
+      <li><strong>Paciente</strong> — para agendar consultas e acessar seu histórico</li>
+      <li><strong>Profissional</strong> — para atender pacientes e gerenciar sua prática</li>
     </ul>
     <p>Se escolher <strong>Profissional</strong>, marque suas especialidades (até 30 disponíveis).</p>
-    <div class="alerta">⚠️ <strong>Recepcionista, RH e Financeiro</strong> NÃO são criados pelo cadastro público. Esses perfis são criados internamente pelo Admin da clínica, no painel de administração. Eles não pagam assinatura — fazem parte do plano da clínica.</div>
-    <div class="dica">💡 Se aparecer "Email já cadastrado", faça login ou use "Esqueci minha senha".</div>
+    <div class="dica">💡 Use o ícone 👁️ ao lado da senha para ver o que digitou. Se esquecer a senha, clique em "Esqueci a senha" na tela de login.</div>
 
     <h2 id="perfil">2. Configurando seu Perfil</h2>
-    <p>Em <strong>⚙️ Configurações</strong>, preencha: registro profissional, ABRATH (opcional), cidade, estado, especialidades e modalidades de atendimento.</p>
+    <p>Em <strong>⚙️ Configurações</strong>, preencha:</p>
+    <ul>
+      <li><strong>Registro profissional:</strong> CRM, CREFITO, CRN, etc. (se tiver conselho de classe)</li>
+      <li><strong>Registro ABRATH:</strong> opcional — garante 15% de desconto vitalício</li>
+      <li><strong>Cidade e Estado:</strong> essencial para aparecer nas buscas por CEP</li>
+      <li><strong>Domínio próprio:</strong> se tiver um site (opcional — aparece no seu perfil público)</li>
+      <li><strong>Email profissional:</strong> se tiver (opcional — aparece no seu perfil público)</li>
+    </ul>
     <div class="alerta">⚠️ Massoterapia, Quiropraxia e Acupuntura só permitem atendimento Presencial.</div>
 
-    <h2 id="valores">3. Valores e Agenda</h2>
-    <p><strong>💰 Valores:</strong> defina preços online e presenciais por especialidade.<br><strong>📅 Agenda:</strong> configure horários e regras (antecedência, cancelamento, tolerância).</p>
+    <h2 id="agenda">3. Agenda e Valores</h2>
+    <p><strong>💰 Valores:</strong> defina preços online e presenciais por especialidade. Você pode cobrar valores diferentes para cada modalidade.</p>
+    <p><strong>📅 Agenda:</strong> configure seus horários disponíveis, dias de atendimento e regras:</p>
+    <ul>
+      <li><strong>Antecedência mínima:</strong> quantas horas antes o paciente precisa agendar</li>
+      <li><strong>Prazo para cancelamento:</strong> até quando o paciente pode cancelar sem custo</li>
+      <li><strong>Tolerância de atraso:</strong> quantos minutos você espera</li>
+      <li><strong>Multa por falta:</strong> valor cobrado se o paciente não comparecer</li>
+    </ul>
 
-    <h2 id="pagamentos">4. Conectando os Pagamentos</h2>
-    <p>Escolha entre <strong>8 gateways</strong> (PagSeguro, PagBank, Asaas, Ton, Mercado Pago, Efi Bank, Cielo, Stone) em <strong>⚙️ Configurações → Gateways</strong>. Cole o token e pronto.</p>
-    <div class="dica">💡 As taxas são do gateway, não nossas. Você pode usar mais de um ao mesmo tempo.</div>
+    <h2 id="whatsapp">4. Conectando o WhatsApp Business</h2>
+    <p>O Integrativo.App usa a <strong>Evolution API</strong> — gratuita, sem custo por mensagem.</p>
+    <ol>
+      <li>Acesse <strong>⚙️ Configurações → Integrações → WhatsApp</strong></li>
+      <li>Cole o token da sua instância Evolution API</li>
+      <li>Salve</li>
+    </ol>
+    <p>Depois de configurado, o sistema envia automaticamente: lembretes de consulta, confirmações de agendamento e notificações de cancelamento.</p>
+    <div class="dica">💡 Você também pode criar uma <strong>lojinha no WhatsApp Business</strong> — uma opção no painel para exibir seus produtos e serviços diretamente no WhatsApp.</div>
 
-    <h2 id="whatsapp">5. Conectando o WhatsApp</h2>
-    <p>Usamos a <strong>Evolution API</strong> — gratuita, sem custo por mensagem. Cole o token em <strong>⚙️ Configurações → Integrações → WhatsApp</strong>.</p>
+    <h2 id="pagamentos">5. Conectando os Pagamentos (Gateways)</h2>
+    <p>Escolha entre <strong>8 gateways</strong> em <strong>⚙️ Configurações → Gateways</strong>:</p>
+    <table>
+      <tr><th>Gateway</th><th>Taxa Cartão</th><th>Taxa PIX</th></tr>
+      <tr><td>PagSeguro</td><td>3,99%</td><td>1,99%</td></tr>
+      <tr><td>PagBank</td><td>3,99%</td><td>1,99%</td></tr>
+      <tr><td>Asaas</td><td>2,99%</td><td>1,99%</td></tr>
+      <tr><td>Ton</td><td>1,99%</td><td>0,99%</td></tr>
+      <tr><td>Mercado Pago</td><td>3,99%</td><td>1,99%</td></tr>
+      <tr><td>Efi Bank</td><td>1,99%</td><td>1,99%</td></tr>
+      <tr><td>Cielo</td><td>Variável</td><td>1,99%</td></tr>
+      <tr><td>Stone</td><td>Variável</td><td>1,99%</td></tr>
+    </table>
+    <p>Cole o token do gateway escolhido e salve. Você pode usar mais de um ao mesmo tempo.</p>
 
     <h2 id="nf">6. Emitindo Nota Fiscal</h2>
-    <p><strong>Loja Virtual:</strong> NF automática. <strong>Consultas:</strong> você escolhe (automática ou manual). Requer certificado digital — compre na nossa revenda ou em qualquer AC.</p>
+    <p><strong>Loja Virtual:</strong> NF automática (emitida no ato da compra).</p>
+    <p><strong>Consultas e Serviços:</strong> você escolhe o modo em <strong>⚙️ Configurações → Nota Fiscal</strong>:</p>
+    <ul>
+      <li><strong>Automática:</strong> a NF é emitida sozinha após cada consulta</li>
+      <li><strong>Manual:</strong> o sistema prepara a NF e você clica em "Autorizar"</li>
+    </ul>
+    <div class="alerta">⚠️ Para emitir NF, é necessário ter um <strong>Certificado Digital</strong> (A1 ou A3). Se você não tiver, pode usar o portal oficial da prefeitura (nfse.gov.br) — mas a NF não será integrada ao sistema.</div>
 
-    <h2 id="loja">7. Usando a Loja</h2>
-    <p>Ative em <strong>⚙️ Configurações → Loja</strong>. Cadastre produtos, defina frete grátis e formas de pagamento.</p>
+    <h2 id="certificado">7. Certificado Digital</h2>
+    <p>Compre na nossa revenda (menu <strong>🔐 Revenda</strong>) ou em qualquer Autoridade Certificadora.</p>
+    <ol>
+      <li>Após a compra, faça upload do arquivo .pfx em <strong>⚙️ Configurações → Integrações → Nota Fiscal</strong></li>
+      <li>Informe a senha do certificado e sua Inscrição Municipal</li>
+      <li>Salve</li>
+    </ol>
+    <div class="dica">💡 Se você não tem certificado, o sistema exibirá um popup lembrando das vantagens ao emitir NF ou ao fazer login.</div>
 
-    <h2 id="especialidades">8. 30 Bancos Terapêuticos</h2>
+    <h2 id="loja">8. Usando a Loja</h2>
+    <p>Ative sua loja em <strong>⚙️ Configurações → Loja</strong>. Cadastre produtos, defina frete grátis e formas de pagamento. A loja física funciona no balcão da recepção com estoque unificado.</p>
+    <div class="alerta">⚠️ Para vender produtos com emissão de NF, é necessário ter certificado digital. Sem ele, a venda é registrada, mas a NF deve ser emitida manualmente pelo portal da prefeitura.</div>
+
+    <h2 id="pacientes">9. Gerenciando Pacientes e Prontuário</h2>
+    <p>No <strong>Dashboard</strong>, clique em <strong>👥 Pacientes</strong> para ver a lista completa. Use a busca por nome ou CPF para encontrar um paciente específico.</p>
+    <p>Ao clicar no nome do paciente, você acessa:</p>
+    <ul>
+      <li><strong>Prontuário:</strong> histórico completo de consultas</li>
+      <li><strong>Anamnese:</strong> Parte 1 (preenchida pelo paciente) e Parte 2 (personalizada por você)</li>
+      <li><strong>Prescrições:</strong> histórico de prescrições e solicitações</li>
+      <li><strong>Exames:</strong> exames anexados</li>
+    </ul>
+
+    <h2 id="colaboradores">10. Cadastrando Colaboradores (Recepcionista, RH, Financeiro)</h2>
+    <p>Acesse o <strong>Painel Admin</strong> (disponível nos planos Premium, Enterprise e Coworking).</p>
+    <ol>
+      <li>Clique em <strong>👥 Usuários → Convidar</strong></li>
+      <li>Informe o email e nome do colaborador</li>
+      <li>Escolha o tipo: Recepcionista, RH, Financeiro ou Contador</li>
+      <li>O colaborador recebe um email com link para criar a senha</li>
+    </ol>
+    <div class="alerta">⚠️ Esses perfis NÃO pagam assinatura. Fazem parte do plano da clínica.</div>
+
+    <h2 id="blog">11. Blog Profissional</h2>
+    <p>Acesse <strong>✍️ Blog</strong> no menu. Escreva artigos com:</p>
+    <ul>
+      <li><strong>Título:</strong> obrigatório</li>
+      <li><strong>Palavras-chave:</strong> obrigatório (para SEO)</li>
+      <li><strong>Fonte bibliográfica:</strong> obrigatório (para credibilidade)</li>
+      <li><strong>Meta description:</strong> obrigatório (para Google)</li>
+    </ul>
+    <p>O sistema analisa seu texto e sugere melhorias de SEO automaticamente. Seus artigos aparecem no seu perfil público e na página de blog do Integrativo.App.</p>
+
+    <h2 id="yoga">12. Módulo Yoga</h2>
+    <p>Crie planos de assinatura ou aulas avulsas. Presença automática na teleconsulta. Faltas geram reposição em 30 dias (sem aviso prévio). Relatórios de frequência disponíveis.</p>
+
+    <h2 id="massagens">13. Módulo Massagens</h2>
+    <p>Funciona igual ao Yoga. Planos, sessões avulsas, presença automática, reposição.</p>
+
+    <h2 id="retornos">14. Retornos Gratuitos</h2>
+    <p>No prontuário, clique em <strong>Agendar Retorno</strong>. Defina um prazo máximo. O paciente recebe notificação. O sistema identifica automaticamente se é retorno (grátis) ou consulta nova (paga).</p>
+
+    <h2 id="contratos">15. Contratos de Assinatura</h2>
+    <p>Crie contratos para Yoga e Massagens. Defina nome, sessões, valor e forma de pagamento. O paciente assina eletronicamente. Cada sessão agendada desconta do saldo.</p>
+
+    <h2 id="especialidades">16. 30 Bancos Terapêuticos</h2>
     <p>O Integrativo.App possui <strong>30 bibliotecas</strong> com <strong>781 registros</strong> baseados em fontes oficiais (OMS, PNPIC, textos clássicos).</p>
     <table>
       <tr><th>Faixa de Preço</th><th>Especialidades</th></tr>
@@ -101,7 +195,7 @@
       <tr><td>R$ 29,90/mês</td><td>Jyotish, Vastu Shastra</td></tr>
     </table>
 
-    <h2 id="modulos">9. Módulos Extras (Compra Avulsa)</h2>
+    <h2 id="modulos">17. Módulos Extras (Compra Avulsa)</h2>
     <p>Adicione especialidades além das inclusas no seu plano.</p>
     <table>
       <tr><th>Quantidade</th><th>Primeiros 3 meses</th><th>Após 3 meses</th></tr>
@@ -110,35 +204,23 @@
       <tr><td>10 ou mais</td><td>50% off</td><td>30% off</td></tr>
     </table>
 
-    <h2 id="yoga">10. Módulo Yoga</h2>
-    <p>Crie planos de assinatura ou aulas avulsas. Presença automática na teleconsulta. Faltas geram reposição em 30 dias (sem aviso prévio).</p>
-
-    <h2 id="massagens">11. Módulo Massagens</h2>
-    <p>Funciona igual ao Yoga. Planos, sessões avulsas, presença automática, reposição.</p>
-
-    <h2 id="retornos">12. Retornos Gratuitos</h2>
-    <p>Agende retorno com prazo máximo. O paciente recebe notificação. Sistema identifica automaticamente se é retorno (grátis) ou consulta nova (paga).</p>
-
-    <h2 id="contratos">13. Contratos de Assinatura</h2>
-    <p>Crie contratos para Yoga e Massagens. Defina nome, sessões, valor e forma de pagamento. O paciente assina eletronicamente.</p>
-
-    <h2 id="rh">14. RH, Recepcionista e Financeiro</h2>
+    <h2 id="rh">18. RH, Recepcionista e Financeiro</h2>
     <p>Esses <strong>não são assinantes separados</strong>. São <strong>perfis de acesso internos</strong> da clínica, criados pelo Admin no painel de administração.</p>
-    <table>
-      <tr><th>Perfil</th><th>O que faz</th><th>Quem paga?</th></tr>
-      <tr><td>Recepcionista</td><td>Check-in, caixa, loja física</td><td>A clínica (incluso no plano)</td></tr>
-      <tr><td>RH</td><td>Folha de pagamento, guias, funcionários</td><td>A clínica (incluso no plano)</td></tr>
-      <tr><td>Financeiro</td><td>Contas, NF, relatórios</td><td>A clínica (incluso no plano)</td></tr>
-      <tr><td>Contador</td><td>Auditoria fiscal (somente leitura)</td><td>A clínica (incluso no plano)</td></tr>
-    </table>
-    <div class="dica">💡 O Admin da clínica cria esses perfis em <strong>👥 Usuários → Convidar</strong>. Informa o email e o tipo de acesso. O convidado recebe um link para criar a senha.</div>
 
-    <h2 id="revenda">15. Revenda de Certificado e Domínio</h2>
-    <p>Compre certificado digital (A1 ou A3) e domínio (.com.br ou .com) diretamente pelo painel. Preços atualizados automaticamente. Sem venda casada.</p>
+    <h2 id="revenda">19. Revenda de Certificado e Domínio</h2>
+    <p>Compre certificado digital (A1 ou A3) e domínio (.com.br ou .com) diretamente pelo painel. Preços atualizados automaticamente. Sem venda casada — você pode comprar em qualquer fornecedor.</p>
 
-    <h2 id="beneficios">16. Benefícios de Primeira Assinatura</h2>
+    <h2 id="beneficios">20. Benefícios de Primeira Assinatura</h2>
     <div class="dica">🎁 <strong>Semestral:</strong> 10 consultas livres de comissão (5%).<br><strong>Anual:</strong> 1 mês com todas as 30 bibliotecas liberadas + 1 mês sem comissão sobre consultas.</div>
     <div class="alerta">⚠️ Válido apenas na <strong>primeira assinatura</strong>. Não se aplica a renovações.</div>
+
+    <h2 id="demonstracao">21. Contas de Demonstração</h2>
+    <p>Para testar o sistema, use as contas demo:</p>
+    <table>
+      <tr><th>Tipo</th><th>Email</th><th>Senha</th></tr>
+      <tr><td>Profissional</td><td>profissional@demo.com</td><td>demo123</td></tr>
+      <tr><td>Paciente</td><td>paciente@demo.com</td><td>demo123</td></tr>
+    </table>
 
     <p style="text-align:center;margin-top:40px;color:var(--texto-medio);">Dúvidas? <strong>suporte@integrativo.app</strong></p>
   </div>

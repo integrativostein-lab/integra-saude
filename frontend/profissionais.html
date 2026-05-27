@@ -20,18 +20,19 @@
         .facilidade-item .titulo { font-weight: 600; color: #1B4332; font-size: 12px; }
 
         .tabela-planos { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; background: #1A365D; color: #FFF; border-radius: 12px; overflow: hidden; }
-        .tabela-planos th { background: #0F2440; color: #F4A261; padding: 12px 10px; text-align: center; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-size: 14px; }
+        .tabela-planos th { background: #0F2440; color: #F4A261; padding: 10px 8px; text-align: center; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-size: 14px; }
         .tabela-planos th:first-child { text-align: left; }
-        .tabela-planos td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; color: #FFF; font-size: 13px; }
+        .tabela-planos td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; color: #FFF; font-size: 14px; }
         .tabela-planos td:first-child { text-align: left; font-weight: 500; color: #F4A261; }
         .tabela-planos tr:hover { background: rgba(255,255,255,0.04); }
         .tabela-planos .check { color: #F4A261; font-weight: 700; }
         .tabela-planos .dash { color: rgba(255,255,255,0.25); }
         .tabela-planos .preco { font-weight: 700; color: #F4A261; font-size: 15px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
-        .tabela-planos .btn-assinar { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 11px; text-decoration: none; cursor: pointer; border: 1px solid #F4A261; background: transparent; color: #F4A261; }
+        .tabela-planos .btn-assinar { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 11px; text-decoration: none; cursor: pointer; border: 1px solid #F4A261; background: transparent; color: #F4A261; }
         .tabela-planos .btn-assinar:hover { background: #F4A261; color: #1A365D; }
-        .tabela-planos .nota-rodape { font-size: 11px; color: #A0C4FF; }
-        .tabela-planos .cert-info { font-size: 11px; color: #FFD700; }
+        .tabela-planos .cert-info { font-size: 11px; color: #F4A261; }
+        .tabela-planos .asterisco { color: #F4A261; }
+        .legenda-asterisco { font-size: 11px; color: #4A5568; margin-top: 8px; }
 
         .tabela-taxas { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 12px; overflow: hidden; }
         .tabela-taxas th { background: #1A365D; color: #FFF; padding: 10px; font-size: 13px; }
@@ -42,6 +43,7 @@
         .motivacao { background: #F5F0E8; padding: 40px; text-align: center; border-radius: 12px; margin: 30px 0; }
         .doacao-banner { background: linear-gradient(135deg, #1A365D, #2C5282); color: #FFF; padding: 30px 40px; border-radius: 14px; margin: 30px 0; text-align: center; }
         .doacao-banner h3 { color: #FFF; font-size: 20px; }
+        .doacao-banner .btn { margin-top: 14px; }
 
         .carrossel-cit { overflow: hidden; max-width: 700px; margin: 20px auto; background: #E8F0E8; padding: 30px; border-radius: 12px; }
         .carrossel-cit blockquote { font-size: 16px; font-style: italic; color: #1A365D; margin: 0; }
@@ -58,7 +60,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit;">🌿 Integrativo<span>.</span>App</a></div>
+        <a href="#" onclick="irParaDashboard()" style="text-decoration:none;"><div class="logo">🌿 Integrativo<span>.</span>App</div></a>
         <div class="menu">
             <a href="index.html">Para Pacientes</a>
             <a href="#planos">Planos</a>
@@ -105,7 +107,7 @@
                 <div class="facilidade-item"><div class="icone">🎙️</div><div class="titulo">Entrada por Voz</div></div>
                 <div class="facilidade-item"><div class="icone">🔐</div><div class="titulo">Revenda Certificado</div></div>
                 <div class="facilidade-item"><div class="icone">🏪</div><div class="titulo">Marketplace Pacientes</div></div>
-                <div class="facilidade-item"><div class="icone">🎁</div><div class="titulo">Cert. Grátis (Enterprise/Coworking)</div></div>
+                <div class="facilidade-item"><div class="icone">🎁</div><div class="titulo">Cert. Grátis (Enterprise)</div></div>
                 <div class="facilidade-item"><div class="icone">🏛️</div><div class="titulo">Doação Prefeituras</div></div>
                 <div class="facilidade-item"><div class="icone">🌍</div><div class="titulo">Doação Humanitária</div></div>
                 <div class="facilidade-item"><div class="icone">🔒</div><div class="titulo">LGPD + GDPR + HIPAA</div></div>
@@ -128,19 +130,23 @@
                 <tr><td>Recepcionistas</td><td class="dash">—</td><td>1</td><td>3</td><td>Ilimitado</td><td>Ilimitado</td></tr>
                 <tr><td>Blog (artigos)</td><td class="dash">—</td><td>10</td><td>Ilimitados</td><td>Ilimitados</td><td>Ilimitados</td></tr>
                 <tr><td>Loja Virtual</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-                <tr><td>Nota Fiscal*</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-                <tr><td>Relatórios SUS*</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+                <tr><td>Nota Fiscal</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
                 <tr><td>White Label</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
                 <tr><td>API White Label</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
                 <tr><td>Gestão de Salas</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
-                <tr><td>Bibliotecas Inclusas</td><td>1</td><td>4</td><td>8</td><td class="check">16*</td><td class="check">30</td></tr>
-                <tr><td>Cert. A1 Grátis</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓ (Anual)</td><td class="check">✓<br><span class="cert-info">renovável a cada 12 meses, desde que ativo por todo o período</span></td></tr>
+                <tr><td>Cert. A1 Grátis</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓ (Anual)</td><td class="check">✓</td></tr>
+                <tr><td></td><td></td><td></td><td></td><td></td><td class="cert-info">renovável a cada 12 meses, desde que ativo por todo o período</td></tr>
                 <tr><td>Preço Mensal</td><td class="preco">Grátis</td><td class="preco">R$ 79,90</td><td class="preco">R$ 399,90</td><td class="preco">R$ 799,90</td><td class="preco">R$ 1.499,90</td></tr>
                 <tr><td>Preço Anual</td><td class="dash">—</td><td class="preco">R$ 767,04</td><td class="preco">R$ 3.839,04</td><td class="preco">R$ 7.679,04</td><td class="dash">—</td></tr>
                 <tr><td></td><td><a href="cadastro.html" class="btn-assinar">Começar</a></td><td><a href="cadastro.html?plano=pro" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=premium" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=enterprise" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=coworking" class="btn-assinar">Assinar</a></td></tr>
             </table>
-            <p class="nota-rodape" style="margin-top:8px;">
-                * Nota Fiscal: requer certificado digital. * Relatórios SUS: exportação manual. * Enterprise: 16 bibliotecas inclusas — as demais disponíveis para compra avulsa.
+            <p class="legenda-asterisco"><span class="asterisco">*</span> Funções manuais (envio SUS, exportação de dados) — o sistema gera o arquivo, o envio é feito pelo profissional.</p>
+            <p style="text-align:center;margin-top:12px;font-size:13px;color:#4A5568;">
+                💡 Limites renovam mensalmente. Mensal: renovação automática. Semestral (-10%) e Anual (-20%): sem renovação automática (CDC).<br>
+                🏗️ Coworking: apenas ciclo mensal. Certificado A1 incluso e renovável a cada 12 meses mediante assinatura ativa. Profissionais vinculados usam o sistema gratuitamente.
+            </p>
+            <p style="text-align:center;margin-top:12px;font-size:13px;color:#4A5568;">
+                🎁 <strong>Benefícios de Primeira Assinatura:</strong> Semestral: 10 consultas livres de comissão. Anual: 1 mês com todas as 30 bibliotecas + 1 mês sem comissão. Válido apenas na primeira assinatura.
             </p>
         </div>
     </section>
@@ -205,6 +211,18 @@
     </footer>
 
     <script>
+        function irParaDashboard() {
+            var token = localStorage.getItem('integra_token');
+            var usuario = localStorage.getItem('integra_usuario');
+            if (token && usuario) {
+                try {
+                    var u = JSON.parse(usuario);
+                    if (u.tipo === 'paciente') window.location.href = 'painel-paciente.html';
+                    else window.location.href = 'painel-terapeuta.html';
+                } catch(e) {}
+            }
+        }
+
         var citacoes = [
             { texto: "A medicina ayurvédica não trata a doença — trata o doente.", autor: "Dr. Vasant Lad" },
             { texto: "A saúde é o estado de equilíbrio entre o corpo, a mente e a consciência.", autor: "Charaka Samhita" },

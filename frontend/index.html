@@ -36,7 +36,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integrativo<span>.</span>App</div>
+    <a href="#" onclick="irParaDashboard()" style="text-decoration:none;"><div class="logo">🌿 Integrativo<span>.</span>App</div></a>
     <div class="menu">
       <a href="#especialidades">Especialidades</a>
       <a href="#como-funciona">Como Funciona</a>
@@ -117,6 +117,18 @@
   <script src="js/app.js"></script>
   <script src="js/audio-ambiente.js"></script>
   <script>
+    function irParaDashboard() {
+      var token = localStorage.getItem('integra_token');
+      var usuario = localStorage.getItem('integra_usuario');
+      if (token && usuario) {
+        try {
+          var u = JSON.parse(usuario);
+          if (u.tipo === 'paciente') window.location.href = 'painel-paciente.html';
+          else window.location.href = 'painel-terapeuta.html';
+        } catch(e) { window.location.href = 'index.html'; }
+      }
+    }
+
     var track = document.getElementById('carrosselEspecTrack');
     var items = track.children;
     var itemWidth = 190;
