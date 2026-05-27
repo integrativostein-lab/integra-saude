@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Terapeuta - Integra</title>
+  <title>Painel do Profissional — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
   <div class="painel">
     <div class="painel-sidebar">
-      <h3>🌿 Integra</h3>
+      <h3>🌿 Integrativo.App</h3>
       <nav>
         <a href="#" class="ativo">📊 Dashboard</a>
         <a href="#" id="menu-agenda">📅 Agenda</a>
         <a href="#" id="menu-pacientes">👥 Pacientes</a>
         <a href="#" id="menu-loja">🛒 Minha Loja</a>
+        <a href="painel-blog.html">✍️ Blog</a>
+        <a href="painel-mensagens.html">📱 Mensagens</a>
+        <a href="painel-revenda.html">🔐 Revenda</a>
+        <a href="manual.html">📖 Manual</a>
         <a href="#" onclick="logout()">🚪 Sair</a>
       </nav>
     </div>
@@ -28,7 +32,10 @@
         <div class="card"><h3>Faturamento Mês</h3><p style="font-size:28px;" id="dash-fat">-</p></div>
       </div>
 
-      <div class="card"><h3>Próximos Agendamentos</h3><div id="lista-agendamentos" style="margin-top:10px;"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card"><h3>📅 Próximos Agendamentos</h3><div id="lista-agendamentos"></div></div>
+        <div class="card"><h3>📰 Novidades</h3><p style="font-size:13px;color:var(--texto-medio);">Artigos e atualizações em breve.</p></div>
+      </div>
     </div>
   </div>
 
@@ -43,10 +50,9 @@
       var r = await fetch(`${CONFIG.API_URL}/agendamentos/meus`, { headers: { 'Authorization': `Bearer ${token}` } });
       var dados = await r.json();
       document.getElementById('dash-hoje').textContent = dados.filter(a => a.data_agendamento === new Date().toISOString().split('T')[0]).length;
-      document.getElementById('lista-agendamentos').innerHTML = dados.slice(0,5).map(a => `<p style="font-size:13px;">📅 ${a.data_agendamento} ${a.horario_inicio} — ${a.status} — R$ ${a.valor}</p>`).join('') || '<p>Nenhum</p>';
+      document.getElementById('lista-agendamentos').innerHTML = dados.slice(0,5).map(a => `<p style="font-size:13px;">📅 ${a.data_agendamento} ${a.horario_inicio} — ${a.status} — R$ ${a.valor || '0'}</p>`).join('') || '<p style="font-size:13px;">Nenhum</p>';
     }
     carregar();
   </script>
-  <script src="js/popup-sus.js"></script>
 </body>
 </html>
