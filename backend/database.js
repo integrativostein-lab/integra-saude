@@ -727,3 +727,5 @@ async function inicializarBanco() {
 
 
 module.exports = db;
+module.exports.criarTabelas = criarTabelas;
+module.exports.inserirDadosIniciais = inserirDadosIniciais;
