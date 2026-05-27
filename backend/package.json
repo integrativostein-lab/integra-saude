@@ -4,7 +4,7 @@
   "description": "Backend do Integrativo.App - Saúde Integrativa",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+"start": "node database.js && node server.js"
     "dev": "nodemon server.js",
     "db:init": "node database.js"
   },
