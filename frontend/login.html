@@ -14,11 +14,14 @@
     .senha-wrapper { position: relative; }
     .senha-wrapper input { width: 100%; padding-right: 40px; }
     .senha-wrapper .olhinho { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; }
+    .esqueci { text-align: right; margin-top: 4px; font-size: 12px; }
+    .esqueci a { color: var(--azul-escuro); text-decoration: none; }
+    .esqueci a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit;">🌿 Integrativo<span>.</span>App</a></div>
+    <div class="logo">🌿 Integrativo<span>.</span>App</div>
     <div class="menu"><a href="index.html">Início</a></div>
   </nav>
 
@@ -36,13 +39,11 @@
         <input type="password" id="senha" placeholder="Sua senha" required>
         <button class="olhinho" onclick="toggleSenha()" type="button">👁️</button>
       </div>
+      <div class="esqueci"><a href="#" onclick="esqueciSenha()">Esqueci minha senha</a></div>
     </div>
 
     <button class="btn btn-primario" onclick="login()" style="width:100%;margin-top:10px;">Entrar</button>
-    <p style="text-align:center;margin-top:12px;font-size:13px;">
-      <a href="#" onclick="esqueciSenha()">Esqueci minha senha</a>
-    </p>
-    <p style="text-align:center;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    <p style="text-align:center;margin-top:16px;font-size:13px;">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
   </div>
 
   <script src="js/config.js"></script>
@@ -61,8 +62,8 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email })
-      }).then(r => r.json()).then(d => {
-        alert(d.mensagem || 'Verifique seu email.');
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        alert(d.mensagem || 'Se este email estiver cadastrado, você receberá um link de recuperação.');
       });
     }
 
@@ -92,23 +93,33 @@
         if (r.ok) {
           localStorage.setItem('integra_token', d.token);
           localStorage.setItem('integra_usuario', JSON.stringify(d.usuario));
-          
-          // Redirecionar para o dashboard correto
+
+          // Redirecionamento automático conforme tipo de usuário
           var tipo = d.usuario.tipo;
-          if (tipo === 'paciente') window.location.href = 'painel-paciente.html';
-          else if (tipo === 'rh') window.location.href = 'painel-rh.html';
-          else if (tipo === 'admin' || tipo === 'super_admin') window.location.href = 'painel-criador.html';
-          else window.location.href = 'painel-terapeuta.html';
+          if (tipo === 'super_admin' || tipo === 'admin') {
+            window.location.href = 'painel-criador.html';
+          } else if (tipo === 'profissional') {
+            window.location.href = 'painel-terapeuta.html';
+          } else if (tipo === 'paciente') {
+            window.location.href = 'painel-paciente.html';
+          } else if (tipo === 'recepcionista') {
+            window.location.href = 'painel-recepcao.html';
+          } else if (tipo === 'rh') {
+            window.location.href = 'painel-rh.html';
+          } else if (tipo === 'financeiro') {
+            window.location.href = 'painel-financeiro.html';
+          } else {
+            window.location.href = 'busca.html';
+          }
         } else {
           msg.className = 'msg erro';
           msg.textContent = d.erro || 'Erro ao fazer login.';
         }
       } catch(e) {
         msg.className = 'msg erro';
-        msg.textContent = 'Erro de conexão.';
+        msg.textContent = 'Erro de conexão. O servidor está rodando?';
       }
     }
   </script>
-  <!-- teste -->
 </body>
 </html>
