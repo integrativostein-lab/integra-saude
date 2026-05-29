@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Integrativo.App — 30 bibliotecas terapêuticas. Planos a partir de R$ 79,90/mês. A menor taxa do mercado: 5%. Doação para prefeituras e ONGs.">
+    <meta name="description" content="Integrativo.App — 30 especialidades. Planos a partir de R$ 89,90/mês. A menor taxa do mercado: 5%. Doação para prefeituras e ONGs.">
     <title>Integrativo.App — Planos para Profissionais</title>
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="manifest" href="manifest.json">
@@ -19,22 +19,19 @@
         .facilidade-item .icone { font-size: 24px; margin-bottom: 4px; }
         .facilidade-item .titulo { font-weight: 600; color: #1B4332; font-size: 12px; }
 
-        .tabela-planos { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; background: #1A365D; color: #FFF; border-radius: 12px; overflow: hidden; }
-        .tabela-planos th { background: #0F2440; color: #F4A261; padding: 10px 8px; text-align: center; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-size: 14px; }
+        .tabela-planos { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 11px; background: #1A365D; color: #FFF; border-radius: 12px; overflow: hidden; }
+        .tabela-planos th { background: #0F2440; color: #F4A261; padding: 10px 8px; text-align: center; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .tabela-planos th:first-child { text-align: left; }
-        .tabela-planos td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; color: #FFF; font-size: 14px; }
+        .tabela-planos td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; color: #FFF; }
         .tabela-planos td:first-child { text-align: left; font-weight: 500; color: #F4A261; }
         .tabela-planos tr:hover { background: rgba(255,255,255,0.04); }
         .tabela-planos .check { color: #F4A261; font-weight: 700; }
         .tabela-planos .dash { color: rgba(255,255,255,0.25); }
-        .tabela-planos .preco { font-weight: 700; color: #F4A261; font-size: 15px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
-        .tabela-planos .btn-assinar { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 11px; text-decoration: none; cursor: pointer; border: 1px solid #F4A261; background: transparent; color: #F4A261; }
+        .tabela-planos .preco { font-weight: 700; color: #F4A261; font-size: 13px; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+        .tabela-planos .btn-assinar { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 10px; text-decoration: none; cursor: pointer; border: 1px solid #F4A261; background: transparent; color: #F4A261; }
         .tabela-planos .btn-assinar:hover { background: #F4A261; color: #1A365D; }
-        .tabela-planos .cert-info { font-size: 11px; color: #F4A261; }
-        .tabela-planos .asterisco { color: #F4A261; }
-        .legenda-asterisco { font-size: 11px; color: #4A5568; margin-top: 8px; }
 
-        .tabela-taxas { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 12px; overflow: hidden; }
+        .tabela-taxas { width: 100%; border-collapse: collapse; margin: 20px 0; }
         .tabela-taxas th { background: #1A365D; color: #FFF; padding: 10px; font-size: 13px; }
         .tabela-taxas td { padding: 10px; border-bottom: 1px solid #E2E8F0; font-size: 13px; text-align: center; }
         .tabela-taxas .integra-col { background: #C6F6D5; font-weight: 600; }
@@ -43,7 +40,6 @@
         .motivacao { background: #F5F0E8; padding: 40px; text-align: center; border-radius: 12px; margin: 30px 0; }
         .doacao-banner { background: linear-gradient(135deg, #1A365D, #2C5282); color: #FFF; padding: 30px 40px; border-radius: 14px; margin: 30px 0; text-align: center; }
         .doacao-banner h3 { color: #FFF; font-size: 20px; }
-        .doacao-banner .btn { margin-top: 14px; }
 
         .carrossel-cit { overflow: hidden; max-width: 700px; margin: 20px auto; background: #E8F0E8; padding: 30px; border-radius: 12px; }
         .carrossel-cit blockquote { font-size: 16px; font-style: italic; color: #1A365D; margin: 0; }
@@ -51,6 +47,8 @@
         .carrossel-cit .dots { text-align: center; margin-top: 14px; }
         .carrossel-cit .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #CBD5E0; margin: 0 4px; }
         .carrossel-cit .dot.ativo { background: #DD6B20; }
+
+        .legenda-limite { font-size: 10px; color: #F4A261; margin-top: 4px; }
 
         @media (max-width: 768px) {
             .facilidades-grid { grid-template-columns: repeat(2, 1fr); }
@@ -60,7 +58,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="#" onclick="irParaDashboard()" style="text-decoration:none;"><div class="logo">🌿 Integrativo<span>.</span>App</div></a>
+        <div class="logo">🌿 Integrativo<span>.</span>App</div>
         <div class="menu">
             <a href="index.html">Para Pacientes</a>
             <a href="#planos">Planos</a>
@@ -135,18 +133,14 @@
                 <tr><td>API White Label</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
                 <tr><td>Gestão de Salas</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
                 <tr><td>Cert. A1 Grátis</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓ (Anual)</td><td class="check">✓</td></tr>
-                <tr><td></td><td></td><td></td><td></td><td></td><td class="cert-info">renovável a cada 12 meses, desde que ativo por todo o período</td></tr>
-                <tr><td>Preço Mensal</td><td class="preco">Grátis</td><td class="preco">R$ 79,90</td><td class="preco">R$ 399,90</td><td class="preco">R$ 799,90</td><td class="preco">R$ 1.499,90</td></tr>
-                <tr><td>Preço Anual</td><td class="dash">—</td><td class="preco">R$ 767,04</td><td class="preco">R$ 3.839,04</td><td class="preco">R$ 7.679,04</td><td class="dash">—</td></tr>
+                <tr><td>Preço Mensal</td><td class="preco">Grátis</td><td class="preco">R$ 89,90</td><td class="preco">R$ 479,90</td><td class="preco">R$ 999,00</td><td class="preco">R$ 1.599,90</td></tr>
+                <tr><td>Preço Anual</td><td class="dash">—</td><td class="preco">R$ 863,04</td><td class="preco">R$ 4.607,04</td><td class="preco">R$ 9.590,40</td><td class="dash">—</td></tr>
                 <tr><td></td><td><a href="cadastro.html" class="btn-assinar">Começar</a></td><td><a href="cadastro.html?plano=pro" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=premium" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=enterprise" class="btn-assinar">Assinar</a></td><td><a href="cadastro.html?plano=coworking" class="btn-assinar">Assinar</a></td></tr>
             </table>
-            <p class="legenda-asterisco"><span class="asterisco">*</span> Funções manuais (envio SUS, exportação de dados) — o sistema gera o arquivo, o envio é feito pelo profissional.</p>
-            <p style="text-align:center;margin-top:12px;font-size:13px;color:#4A5568;">
+            <p style="text-align:center;margin-top:12px;font-size:11px;color:#4A5568;">
                 💡 Limites renovam mensalmente. Mensal: renovação automática. Semestral (-10%) e Anual (-20%): sem renovação automática (CDC).<br>
-                🏗️ Coworking: apenas ciclo mensal. Certificado A1 incluso e renovável a cada 12 meses mediante assinatura ativa. Profissionais vinculados usam o sistema gratuitamente.
-            </p>
-            <p style="text-align:center;margin-top:12px;font-size:13px;color:#4A5568;">
-                🎁 <strong>Benefícios de Primeira Assinatura:</strong> Semestral: 10 consultas livres de comissão. Anual: 1 mês com todas as 30 bibliotecas + 1 mês sem comissão. Válido apenas na primeira assinatura.
+                🏗️ Coworking: apenas ciclo mensal. Certificado A1 incluso e renovável a cada 12 meses. Profissionais vinculados usam gratuitamente.<br>
+                ⚠️ Coworking: desconto ABRATH não se aplica. Demais planos pagos: ABRATH 15% off vitalício.
             </p>
         </div>
     </section>
@@ -211,18 +205,6 @@
     </footer>
 
     <script>
-        function irParaDashboard() {
-            var token = localStorage.getItem('integra_token');
-            var usuario = localStorage.getItem('integra_usuario');
-            if (token && usuario) {
-                try {
-                    var u = JSON.parse(usuario);
-                    if (u.tipo === 'paciente') window.location.href = 'painel-paciente.html';
-                    else window.location.href = 'painel-terapeuta.html';
-                } catch(e) {}
-            }
-        }
-
         var citacoes = [
             { texto: "A medicina ayurvédica não trata a doença — trata o doente.", autor: "Dr. Vasant Lad" },
             { texto: "A saúde é o estado de equilíbrio entre o corpo, a mente e a consciência.", autor: "Charaka Samhita" },
@@ -244,6 +226,5 @@
             for (var j = 0; j < dots.length; j++) { dots[j].classList.toggle('ativo', j === citIdx); }
         }, 5000);
     </script>
-    <!-- teste -->
 </body>
 </html>

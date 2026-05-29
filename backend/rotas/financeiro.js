@@ -11,62 +11,81 @@ function autenticar(req, res, next) {
   catch { res.status(401).json({ erro: 'Token inválido' }); }
 }
 
+// Parcelamento: até 4x sem juros para anual, até 3x para semestral
 function calcularParcelas(valorTotal, numParcelas) {
   if (numParcelas < 1) numParcelas = 1;
   const valorParcela = valorTotal / numParcelas;
   return { parcelas: numParcelas, valorParcela: parseFloat(valorParcela.toFixed(2)), valorTotal, juros: 0 };
 }
 
+// Registrar pagamento de consulta
 router.post('/pagar', autenticar, async (req, res) => {
-  const { agendamento_id, valor, forma_pagamento } = req.body;
+  const { agendamento_id, valor, forma_pagamento, parcelas } = req.body;
+  
+  // Aplicar 5% off para PIX
+  let valorFinal = valor;
+  let desconto = 0;
+  if (forma_pagamento === 'pix') {
+    desconto = valor * 0.05;
+    valorFinal = valor - desconto;
+  }
+
   const r = await db.query(
-    "INSERT INTO pagamentos (usuario_id, agendamento_id, tipo, valor, forma_pagamento, status) VALUES ($1, $2, 'consulta', $3, $4, 'aprovado') RETURNING id",
-    [req.usuario.id, agendamento_id, valor, forma_pagamento]
+    "INSERT INTO pagamentos (usuario_id, agendamento_id, tipo, valor, forma_pagamento, parcelas, status) VALUES ($1, $2, 'consulta', $3, $4, $5, 'aprovado') RETURNING id",
+    [req.usuario.id, agendamento_id, valorFinal, forma_pagamento, parcelas || 1]
   );
   await db.query("UPDATE agendamentos SET pago = 1, status = 'confirmado' WHERE id = $1", [agendamento_id]);
-  res.json({ mensagem: 'Pago!', id: r.rows[0].id });
+  res.json({ mensagem: 'Pagamento aprovado!', valor_original: valor, desconto_pix: desconto, valor_final: valorFinal, id: r.rows[0].id });
 });
 
+// Listar pagamentos do usuário
 router.get('/meus-pagamentos', autenticar, async (req, res) => {
   const r = await db.query('SELECT * FROM pagamentos WHERE usuario_id = $1 ORDER BY criado_em DESC LIMIT 50', [req.usuario.id]);
   res.json(r.rows);
 });
 
+// Emitir Nota Fiscal
 router.post('/nota-fiscal', autenticar, async (req, res) => {
   const { pagamento_id, autorizar } = req.body;
   const pag = await db.query('SELECT * FROM pagamentos WHERE id = $1', [pagamento_id]);
+  if (pag.rows.length === 0) return res.status(404).json({ erro: 'Pagamento não encontrado' });
+  
   if (pag.rows[0].tipo === 'produto') {
     const nf = await db.query("INSERT INTO notas_fiscais (usuario_id, pagamento_id, tipo, valor_total, status) VALUES ($1, $2, 'nfse', $3, 'emitida') RETURNING id", [req.usuario.id, pagamento_id, pag.rows[0].valor]);
     return res.json({ mensagem: 'NF automática emitida!', id: nf.rows[0].id });
   }
+  
   if (!autorizar) return res.json({ mensagem: 'Aguardando autorização', precisa_autorizacao: true });
+  
   const nf = await db.query("INSERT INTO notas_fiscais (usuario_id, pagamento_id, tipo, valor_total, status, autorizada_por, data_autorizacao) VALUES ($1, $2, 'nfse', $3, 'emitida', $4, NOW()) RETURNING id", [req.usuario.id, pagamento_id, pag.rows[0].valor, req.usuario.id]);
   res.json({ mensagem: 'NF emitida!', id: nf.rows[0].id });
 });
 
+// Renovar/Assinar plano
 router.post('/renovar-assinatura', autenticar, async (req, res) => {
   const { plano, tipo_ciclo, parcelas, codigo_cupom, abrath_registro, abrath_nome } = req.body;
 
   const valores = {
-    pro: { mensal: 54.90, semestral: 274.50, anual: 549 },
-    premium: { mensal: 299.90, semestral: 1499.50, anual: 2999 },
-    enterprise: { mensal: 599.90, semestral: 2999.50, anual: 5999 }
+    pro: { mensal: 89.90, semestral: 485.46, anual: 863.04 },
+    premium: { mensal: 479.90, semestral: 2591.46, anual: 4607.04 },
+    enterprise: { mensal: 999.00, semestral: 5394.60, anual: 9590.40 },
+    coworking: { mensal: 1599.90, semestral: 0, anual: 0 }
   };
 
-  const valorBase = valores[plano]?.[tipo_ciclo] || 54.90;
+  const valorBase = valores[plano]?.[tipo_ciclo] || 89.90;
   let valorFinal = valorBase;
   let vitalicio = false;
   let descontoAplicado = 0;
 
-  // Cupom PRESENTEDOMAU
+  // Cupom PRESENTEDOMAU (Premium vitalício)
   if (codigo_cupom && codigo_cupom.toUpperCase() === 'PRESENTEDOMAU' && plano === 'premium') {
     vitalicio = true;
     valorFinal = 0;
     descontoAplicado = 100;
   }
 
-  // Desconto ABRATH (15%)
-  if (abrath_registro && abrath_nome && !vitalicio) {
+  // Desconto ABRATH (15%) — não se aplica ao Coworking
+  if (abrath_registro && abrath_nome && !vitalicio && plano !== 'coworking') {
     const verificado = await verificarRegistroABRATH(abrath_registro, abrath_nome);
     if (verificado) {
       descontoAplicado = Math.max(descontoAplicado, 15);
@@ -74,7 +93,7 @@ router.post('/renovar-assinatura', autenticar, async (req, res) => {
     }
   }
 
-  // Desconto à vista (5%)
+  // Desconto à vista (5%) para semestral e anual
   if (['semestral', 'anual'].includes(tipo_ciclo) && parseInt(parcelas) === 1 && !vitalicio) {
     descontoAplicado = Math.max(descontoAplicado, 5);
     valorFinal = valorBase * 0.95;
@@ -95,26 +114,11 @@ router.post('/renovar-assinatura', autenticar, async (req, res) => {
 
   res.json({
     mensagem: vitalicio ? '🎉 Assinatura Premium Vitalícia ativada!' : 'Assinatura ativada!',
-    vitalicio,
-    plano,
-    tipo_ciclo,
-    valor: valorFinal,
-    desconto: descontoAplicado,
-    id: r.rows[0].id
+    vitalicio, plano, tipo_ciclo, valor: valorFinal, desconto: descontoAplicado, id: r.rows[0].id
   });
 });
 
-router.get('/simular-parcelas', (req, res) => {
-  const { plano, tipo_ciclo, parcelas } = req.query;
-  const valores = {
-    pro: { semestral: 274.50, anual: 549 },
-    premium: { semestral: 1499.50, anual: 2999 },
-    enterprise: { semestral: 2999.50, anual: 5999 }
-  };
-  const valorTotal = valores[plano]?.[tipo_ciclo] || 549;
-  res.json(calcularParcelas(valorTotal, parseInt(parcelas) || 1));
-});
-
+// Cancelar assinatura
 router.post('/cancelar-assinatura', autenticar, async (req, res) => {
   const { assinatura_id } = req.body;
   const a = await db.query('SELECT * FROM assinaturas WHERE id = $1 AND usuario_id = $2', [assinatura_id, req.usuario.id]);
@@ -132,20 +136,17 @@ router.post('/cancelar-assinatura', autenticar, async (req, res) => {
     const mesesRestantes = Math.max(0, mesesTotais - mesesUsados);
     const valorMensal = ass.valor / mesesTotais;
     const valorRestante = valorMensal * mesesRestantes;
-    multa = valorRestante * (ass.multa_cancelamento_percentual / 100);
+    multa = valorRestante * 0.20;
     valorEstorno = Math.max(0, valorRestante - multa);
   }
 
   await db.query("UPDATE assinaturas SET status = 'cancelada', data_cancelamento = NOW() WHERE id = $1", [assinatura_id]);
   await db.query("UPDATE usuarios SET assinatura_ativa = 0, plano = 'freemium' WHERE id = $1", [req.usuario.id]);
 
-  res.json({
-    mensagem: 'Assinatura cancelada!',
-    multa: parseFloat(multa.toFixed(2)),
-    valor_estorno: parseFloat(valorEstorno.toFixed(2))
-  });
+  res.json({ mensagem: 'Assinatura cancelada!', multa: parseFloat(multa.toFixed(2)), valor_estorno: parseFloat(valorEstorno.toFixed(2)) });
 });
 
+// Dashboard financeiro
 router.get('/dashboard', autenticar, async (req, res) => {
   const fat = await db.query("SELECT COALESCE(SUM(valor),0) as t FROM pagamentos WHERE status = 'aprovado'");
   const ass = await db.query("SELECT COUNT(*) as t FROM assinaturas WHERE status = 'ativa'");

@@ -9,44 +9,35 @@ const fs = require('fs');
 
 const db = require('./database');
 
-// Criar tabelas na primeira execução
-const { criarTabelas, inserirDadosIniciais } = require('./database');
-criarTabelas().then(() => inserirDadosIniciais()).catch(err => console.error('Erro ao inicializar banco:', err));
-// Forçar criação das tabelas no startup
-(async () => {
-  try {
-    await db.query('SELECT 1');
-    console.log('✅ Banco de dados conectado e verificado');
-  } catch (err) {
-    console.error('❌ Erro ao conectar no banco:', err.message);
-  }
-})();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Segurança
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors({ origin: '*', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], allowedHeaders: ['Content-Type', 'Authorization'] }));
 
+// Rate Limiting
 const limiter = rateLimit({ windowMs: 60000, max: 100, message: { erro: 'Muitas requisições.' } });
 app.use('/api/', limiter);
 
+// Logs e parsing
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads');
 
+// Rota de teste
 app.get('/', (req, res) => {
-  res.json({ sistema: 'Integrativo.App - Saúde Integrativa', versao: '1.0.0', status: 'online' });
+  res.json({ sistema: 'Integrativo.App - Saúde Integrativa', versao: '2.0.0', status: 'online' });
 });
 
+// ============================================
+// IMPORTAÇÃO DAS ROTAS
+// ============================================
 
-
-// Rotas
 const authRoutes = require('./rotas/auth');
 const usuarioRoutes = require('./rotas/usuarios');
-const susRoutes = require('./rotas/sus');
 const agendamentoRoutes = require('./rotas/agendamentos');
 const profissionalRoutes = require('./rotas/profissionais');
 const financeiroRoutes = require('./rotas/financeiro');
@@ -67,14 +58,16 @@ const migracaoRoutes = require('./rotas/migracao');
 const googleCalendarRoutes = require('./rotas/google-calendar');
 const gatewaysRoutes = require('./rotas/gateways');
 const conciliacaoRoutes = require('./rotas/conciliacao');
-const acsRoutes = require('./rotas/acs');
+const entidadesRoutes = require('./rotas/entidades');
 
+// ============================================
+// ATIVAÇÃO DAS ROTAS
+// ============================================
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/agendamentos', agendamentoRoutes);
 app.use('/api/profissionais', profissionalRoutes);
-app.use('/api/sus', susRoutes);
 app.use('/api/financeiro', financeiroRoutes);
 app.use('/api/loja', lojaRoutes);
 app.use('/api/yoga', yogaRoutes);
@@ -91,37 +84,17 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/mensagens', mensagensRoutes);
 app.use('/api/migracao', migracaoRoutes);
 app.use('/api/google-calendar', googleCalendarRoutes);
-app.use('/api/acs', acsRoutes)
 app.use('/api/gateways', gatewaysRoutes);
 app.use('/api/conciliacao', conciliacaoRoutes);
-
+app.use('/api/entidades', entidadesRoutes);
 
 console.log('✅ Todas as rotas carregadas');
 
+// Tratamento de erros
 app.use((err, req, res, next) => { res.status(500).json({ erro: 'Erro interno' }); });
 app.use('*', (req, res) => { res.status(404).json({ erro: 'Rota não encontrada' }); });
 
-const { executarAtualizacaoSemanal } = require('./servicos/atualizacao-semanal');
-
-// Agendar para toda segunda-feira às 03:00
-setInterval(() => {
-  const hoje = new Date();
-  if (hoje.getDay() === 1 && hoje.getHours() === 3 && hoje.getMinutes() === 0) {
-    executarAtualizacaoSemanal();
-  }
-}, 60000); // Verifica a cada minuto
-
-const { executarMonitoramentoANVISA } = require('./servicos/anvisa-monitor');
-
-// Executar junto com a atualização semanal (segunda-feira 03:00)
-setInterval(() => {
-  const hoje = new Date();
-  if (hoje.getDay() === 1 && hoje.getHours() === 3 && hoje.getMinutes() === 5) {
-    console.log('🏛️ Executando monitoramento ANVISA...');
-    executarMonitoramentoANVISA();
-  }
-}, 60000);
-
+// Iniciar servidor
 app.listen(PORT, () => {
   console.log('🌿 Integrativo.App - Rodando na porta ' + PORT);
   console.log('📧 Admin: admin@integra.com / admin123');

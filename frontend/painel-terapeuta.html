@@ -6,87 +6,54 @@
   <title>Painel do Profissional — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
-    .popup-nf { background: #FFF3CD; border: 1px solid #F4A261; border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 12px; display: none; }
-    .lista-pacientes { max-height: 300px; overflow-y: auto; }
-    .lista-pacientes a { display: block; padding: 6px 0; color: var(--azul-escuro); text-decoration: none; border-bottom: 1px solid #EEE; }
-    .lista-pacientes a:hover { background: #F7FAFC; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .dash-card { background: var(--branco); padding: 20px; border-radius: var(--raio-borda); box-shadow: var(--sombra); text-align: center; }
+    .dash-card h3 { font-size: 14px; color: var(--texto-medio); margin-bottom: 6px; }
+    .dash-card .valor { font-size: 28px; font-weight: 700; color: var(--azul-escuro); }
+    .lista-agenda { background: var(--branco); border-radius: var(--raio-borda); box-shadow: var(--sombra); padding: 20px; }
+    .agenda-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E2E8F0; cursor: pointer; transition: background 0.2s; }
+    .agenda-item:hover { background: var(--cinza-claro); margin: 0 -20px; padding: 12px 20px; }
+    .agenda-item:last-child { border-bottom: none; }
+    .agenda-item .paciente-nome { font-weight: 600; color: var(--azul-escuro); }
+    .agenda-item .paciente-info { font-size: 12px; color: var(--texto-medio); }
+    .btn-teleconsulta { background: var(--verde-suave); color: #FFF; padding: 6px 14px; border-radius: 20px; font-size: 12px; text-decoration: none; }
+    .upsell-banner { background: var(--laranja-claro); border: 1px solid var(--laranja); border-radius: var(--raio-borda); padding: 16px 20px; margin-top: 20px; text-align: center; }
   </style>
 </head>
 <body>
   <div class="painel">
     <div class="painel-sidebar">
-      <h3><a href="painel-terapeuta.html" style="text-decoration:none;color:inherit;">🌿 Integrativo<span>.</span>App</a></h3>
+      <h3>🌿 Integrativo</h3>
       <nav>
-        <a href="painel-terapeuta.html" class="ativo">📊 Dashboard</a>
-        <a href="#" id="menu-agenda">📅 Agenda</a>
-        <a href="#" id="menu-pacientes">👥 Pacientes</a>
-        <a href="#" id="menu-loja">🛒 Minha Loja</a>
-        <a href="painel-blog.html">✍️ Blog</a>
-        <a href="painel-mensagens.html">📱 Mensagens</a>
-        <a href="painel-revenda.html">🔐 Revenda</a>
-        <a href="painel-white-label.html">🎨 Personalizar</a>
-        <a href="manual.html" target="_blank">📖 Manual</a>
+        <a href="#" class="ativo" onclick="mostrarSecao('dashboard')">📊 Dashboard</a>
+        <a href="#" id="menu-agenda" onclick="mostrarSecao('agenda')">📅 Agenda</a>
+        <a href="#" id="menu-pacientes" onclick="mostrarSecao('pacientes')">👥 Pacientes</a>
+        <a href="#" id="menu-loja" onclick="mostrarSecao('loja')">🛒 Minha Loja</a>
+        <a href="#" id="menu-blog" onclick="mostrarSecao('blog')">✍️ Blog</a>
+        <a href="#" id="menu-whatsapp" onclick="mostrarSecao('whatsapp')">📱 WhatsApp</a>
+        <a href="#" id="menu-dominio" onclick="mostrarSecao('dominio')">🌐 Domínio/Email</a>
+        <a href="manual.html">📖 Manual</a>
         <a href="#" onclick="logout()">🚪 Sair</a>
       </nav>
     </div>
-    <div class="painel-conteudo">
-      <h2>Dashboard</h2>
-      <p style="color:var(--texto-medio);margin-bottom:24px;">Bem-vindo(a) ao seu painel.</p>
+    <div class="painel-conteudo" id="conteudo">
+      <!-- DASHBOARD -->
+      <div id="secao-dashboard">
+        <h2>Dashboard</h2>
+        <p style="color:var(--texto-medio);margin-bottom:20px;">Bem-vindo(a), <span id="nome-profissional">Profissional</span>!</p>
+        
+        <div class="dashboard-grid">
+          <div class="dash-card"><h3>Consultas Hoje</h3><div class="valor" id="dash-hoje">-</div></div>
+          <div class="dash-card"><h3>Pacientes Ativos</h3><div class="valor" id="dash-pacientes">-</div></div>
+          <div class="dash-card"><h3>Faturamento Mês</h3><div class="valor" id="dash-fat">-</div></div>
+        </div>
 
-      <!-- Popup NF (aparece se não tiver certificado) -->
-      <div class="popup-nf" id="popup-nf">
-        ⚠️ Você não possui Certificado Digital. As Notas Fiscais da loja devem ser emitidas pelo portal oficial: <a href="https://www.nfse.gov.br" target="_blank">nfse.gov.br</a>. Adquira seu certificado em <a href="painel-revenda.html">nossa revenda</a>.
-      </div>
-
-      <!-- Popup WhatsApp Business -->
-      <div class="popup-nf" id="popup-whats" style="display:block;">
-        💡 Configure o <strong>WhatsApp Business</strong> em ⚙️ Configurações → Integrações para enviar lembretes automáticos. Você também pode ativar sua <strong>lojinha no WhatsApp</strong> por lá.
-      </div>
-
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
-        <div class="card"><h3>Consultas Hoje</h3><p style="font-size:28px;" id="dash-hoje">-</p></div>
-        <div class="card"><h3>Pacientes</h3><p style="font-size:28px;" id="dash-pacientes">-</p></div>
-        <div class="card"><h3>Faturamento Mês</h3><p style="font-size:28px;" id="dash-fat">-</p></div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <!-- Próximos Agendamentos -->
-        <div class="card">
+        <div class="lista-agenda">
           <h3>📅 Próximos Agendamentos</h3>
-          <div id="lista-agendamentos" style="max-height:200px;overflow-y:auto;"></div>
+          <div id="lista-proximos"></div>
         </div>
-        <!-- Últimas Notícias -->
-        <div class="card">
-          <h3>📰 Últimas Notícias</h3>
-          <div id="lista-noticias">
-            <p style="font-size:12px;"><a href="#" style="color:var(--azul-escuro);">📝 Novo artigo: "Camomila e ansiedade" — Dra. Ana</a><br><span style="font-size:10px;color:var(--texto-medio);">Fitoterapia — Há 2 dias</span></p>
-            <p style="font-size:12px;"><a href="#" style="color:var(--azul-escuro);">🔬 ANVISA atualiza lista de fitoterápicos</a><br><span style="font-size:10px;color:var(--texto-medio);">Sistema — Há 5 dias</span></p>
-            <p style="font-size:12px;"><a href="#" style="color:var(--azul-escuro);">🧘 Yoga e saúde mental: novo estudo publicado</a><br><span style="font-size:10px;color:var(--texto-medio);">Yoga — Há 1 semana</span></p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Pacientes -->
-      <div class="card" style="margin-top:16px;">
-        <h3>👥 Meus Pacientes</h3>
-        <input type="text" id="busca-paciente" placeholder="🔍 Buscar por nome ou CPF..." style="width:100%;padding:8px;margin-bottom:10px;border:2px solid #E2E8F0;border-radius:8px;" oninput="filtrarPacientes()">
-        <div class="lista-pacientes" id="lista-pacientes">
-          <p style="font-size:13px;color:var(--texto-medio);">Carregando...</p>
-        </div>
-      </div>
-
-      <!-- Domínio e Email -->
-      <div class="card" style="margin-top:16px;">
-        <h3>🌐 Seu Link Profissional</h3>
-        <div class="form-grupo">
-          <label>Domínio (opcional)</label>
-          <input type="text" id="perfil-dominio" placeholder="meudominio.com.br">
-        </div>
-        <div class="form-grupo">
-          <label>Email profissional (opcional)</label>
-          <input type="email" id="perfil-email" placeholder="contato@meudominio.com.br">
-        </div>
-        <button class="btn btn-primario" style="font-size:12px;" onclick="salvarPerfil()">Salvar</button>
+        <div id="upsell-container"></div>
       </div>
     </div>
   </div>
@@ -94,38 +61,63 @@
   <script src="js/config.js"></script>
   <script>
     function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+    
+    var token = localStorage.getItem('integra_token');
+    if (!token) { window.location.href = 'login.html'; }
 
-    async function carregar() {
-      var token = localStorage.getItem('integra_token');
-      if (!token) { window.location.href = 'login.html'; return; }
+    // Carregar nome do profissional
+    var usuario = JSON.parse(localStorage.getItem('integra_usuario') || '{}');
+    if (usuario.nome) document.getElementById('nome-profissional').textContent = usuario.nome;
 
-      // Agenda
+    // Carregar dashboard
+    async function carregarDashboard() {
       var r = await fetch(`${CONFIG.API_URL}/agendamentos/meus`, { headers: { 'Authorization': `Bearer ${token}` } });
       var dados = await r.json();
-      document.getElementById('dash-hoje').textContent = dados.filter(a => a.data_agendamento === new Date().toISOString().split('T')[0]).length;
-      document.getElementById('dash-pacientes').textContent = dados.length;
-      document.getElementById('lista-agendamentos').innerHTML = dados.slice(0,5).map(a => `<p style="font-size:13px;">📅 ${a.data_agendamento} ${a.horario_inicio} — ${a.status} — R$ ${a.valor || '0'}</p>`).join('') || '<p style="font-size:13px;">Nenhum</p>';
+      var hoje = new Date().toISOString().split('T')[0];
+      var deHoje = dados.filter(function(a) { return a.data_agendamento === hoje; });
+      document.getElementById('dash-hoje').textContent = deHoje.length;
+      document.getElementById('dash-pacientes').textContent = dados.length > 0 ? new Set(dados.map(function(a) { return a.paciente_id; })).size : 0;
 
-      // Pacientes (simulado)
-      document.getElementById('lista-pacientes').innerHTML = `
-        <a href="#">Maria Silva — CPF: ***.123.***-**</a>
-        <a href="#">João Costa — CPF: ***.456.***-**</a>
-        <a href="#">Ana Oliveira — CPF: ***.789.***-**</a>
-      `;
+      var total = dados.filter(function(a) { return a.status === 'realizado'; }).reduce(function(s, a) { return s + (a.valor || 0); }, 0);
+      document.getElementById('dash-fat').textContent = 'R$ ' + total.toFixed(2);
 
-      // Verificar certificado (simulado — mostra popup NF)
-      var temCert = false; // Aqui viria do backend
-      if (!temCert) document.getElementById('popup-nf').style.display = 'block';
+      var html = '';
+      dados.slice(0, 5).forEach(function(a) {
+        html += '<div class="agenda-item" onclick="abrirPaciente(' + a.paciente_id + ')">';
+        html += '<div><div class="paciente-nome">' + (a.profissional_nome || 'Paciente') + '</div>';
+        html += '<div class="paciente-info">' + a.data_agendamento + ' às ' + a.horario_inicio + ' — ' + a.status + '</div></div>';
+        if (a.modalidade === 'online' && a.status === 'agendado') {
+          html += '<a href="#" class="btn-teleconsulta" onclick="event.stopPropagation(); iniciarTeleconsulta(' + a.id + ')">🎥 Consulta</a>';
+        }
+        html += '</div>';
+      });
+      document.getElementById('lista-proximos').innerHTML = html || '<p style="color:var(--texto-medio);">Nenhum agendamento.</p>';
+
+      // Upsell Freemium
+      if (usuario.plano === 'freemium') {
+        var limites = CONFIG.PLANOS.freemium;
+        var usados = dados.length;
+        var pct = Math.round((usados / limites.max_agendamentos) * 100);
+        var msg = '';
+        if (pct >= 100) msg = '🎯 Você atingiu o limite de agendamentos! Libere mais com o plano Pro.';
+        else if (pct >= 90) msg = '📈 Você está quase no limite (' + pct + '%). Evite surpresas — migre para o Pro.';
+        else if (pct >= 75) msg = '📊 ' + pct + '% dos agendamentos usados. Já pensou no plano Pro?';
+        else if (pct >= 50) msg = '💡 Você já usou metade do seu plano gratuito. Conheça o Pro.';
+        if (msg) {
+          document.getElementById('upsell-container').innerHTML = '<div class="upsell-banner">' + msg + ' <a href="checkout.html?plano=pro" style="color:var(--azul-escuro);font-weight:700;">Assinar Pro →</a></div>';
+        }
+      }
     }
 
-    function filtrarPacientes() { /* Simples — apenas visual */ }
-
-    function salvarPerfil() {
-      alert('Perfil salvo! (simulação)');
+    function abrirPaciente(id) {
+      alert('Abrir prontuário do paciente #' + id + ' (funcionalidade completa em breve)');
     }
 
-    carregar();
+    function iniciarTeleconsulta(id) {
+      alert('Iniciar teleconsulta #' + id + ' (funcionalidade completa em breve)');
+    }
+
+    carregarDashboard();
   </script>
-  <!-- teste -->
 </body>
 </html>

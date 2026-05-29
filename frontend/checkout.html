@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - Integra</title>
+  <title>Checkout — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
-    .checkout-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    .checkout-container { max-width: 650px; margin: 40px auto; padding: 0 20px; }
     .checkout-card { background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); margin-bottom: 20px; }
     .checkout-card h2 { margin-bottom: 8px; }
     .resumo { background: var(--cinza-claro); padding: 16px; border-radius: 8px; margin: 16px 0; font-size: 14px; }
@@ -14,11 +14,15 @@
     .cupom { margin: 16px 0; }
     .cupom input { padding: 10px; border: 2px solid #E2E8F0; border-radius: 8px; width: 60%; }
     .cupom button { padding: 10px 16px; background: var(--azul-escuro); color: #FFF; border: none; border-radius: 8px; cursor: pointer; }
+    .forma-pagamento { margin: 16px 0; }
+    .forma-pagamento label { display: block; margin-bottom: 8px; font-weight: 600; cursor: pointer; }
+    .btn-pix { background: #38A169; }
+    .btn-pix:hover { background: #2F855A; }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🌿 Integra<span>.</span></div>
+    <div class="logo">🌿 Integrativo<span>.</span>App</div>
     <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a></div>
   </nav>
 
@@ -28,12 +32,20 @@
       <p style="color:var(--texto-medio);">Plano escolhido: <strong id="plano-nome">Pro</strong></p>
 
       <div class="resumo">
-        <p>Valor mensal: <span id="resumo-mensal">R$ 54,90</span></p>
-        <p>Plano Anual (10x): <span id="resumo-anual">R$ 549,00</span></p>
-        <p style="color:var(--verde-suave);">2 meses grátis!</p>
+        <p>Valor mensal: <span id="resumo-mensal">R$ 89,90</span></p>
+        <p id="linha-anual">Plano Anual: <span id="resumo-anual">R$ 863,04</span> <small style="color:var(--verde-suave);">(20% off)</small></p>
+        <p id="linha-pix" style="display:none;color:var(--verde-suave);">Pagamento via PIX: <span id="resumo-pix">5% off adicional</span></p>
       </div>
 
       <div class="form-grupo">
+        <label>Ciclo</label>
+        <select id="ciclo" onchange="atualizarResumo()">
+          <option value="mensal">Mensal</option>
+          <option value="anual">Anual (20% off)</option>
+        </select>
+      </div>
+
+      <div class="form-grupo" id="grupo-parcelas" style="display:none;">
         <label>Parcelas (até 4x sem juros)</label>
         <select id="parcelas" onchange="atualizarResumo()">
           <option value="1">1x (à vista)</option>
@@ -41,6 +53,7 @@
           <option value="3">3x</option>
           <option value="4">4x</option>
         </select>
+        <p id="info-parcelas" style="font-size:12px;color:var(--texto-medio);margin-top:4px;"></p>
       </div>
 
       <div class="cupom">
@@ -50,31 +63,46 @@
         <p id="msg-cupom" style="font-size:12px;margin-top:4px;"></p>
       </div>
 
-      <div class="form-grupo">
+      <div class="forma-pagamento">
         <label>Forma de Pagamento</label>
-        <select id="forma-pagamento">
-          <option value="pix">PIX</option>
-          <option value="cartao_credito">Cartão de Crédito</option>
-        </select>
+        <label><input type="radio" name="pgto" value="pix" onchange="atualizarResumo()"> PIX (5% off adicional)</label>
+        <label><input type="radio" name="pgto" value="cartao" checked onchange="atualizarResumo()"> Cartão de Crédito</label>
       </div>
 
       <button class="btn btn-primario" onclick="finalizar()" style="width:100%;margin-top:10px;">Finalizar Pagamento</button>
+      <p style="font-size:12px;color:var(--texto-medio);margin-top:8px;">🔒 Dados do cartão não são armazenados por nós.</p>
     </div>
   </div>
-
-  <footer style="text-align:center;padding:20px;font-size:12px;color:var(--texto-medio);">
-    <a href="manual.html">📖 Manual de Uso</a>
-  </footer>
 
   <script src="js/config.js"></script>
   <script>
     var plano = 'pro';
+    var valorMensal = CONFIG.PLANOS[plano].valor_mensal;
     var valorAnual = CONFIG.PLANOS[plano].valor_anual;
+    var pixOff = false;
 
     function atualizarResumo() {
-      var p = parseInt(document.getElementById('parcelas').value);
-      var valorParcela = (valorAnual / p).toFixed(2);
-      document.getElementById('resumo-anual').textContent = 'R$ ' + valorParcela + ' x ' + p;
+      var ciclo = document.getElementById('ciclo').value;
+      var parcelas = parseInt(document.getElementById('parcelas').value) || 1;
+      var pgto = document.querySelector('input[name="pgto"]:checked').value;
+      pixOff = (pgto === 'pix');
+
+      document.getElementById('grupo-parcelas').style.display = ciclo === 'anual' ? 'block' : 'none';
+      document.getElementById('linha-pix').style.display = pixOff ? 'block' : 'none';
+      document.getElementById('linha-anual').style.display = ciclo === 'anual' ? 'block' : 'none';
+
+      var base = ciclo === 'anual' ? valorAnual : valorMensal;
+      if (pixOff) base = base * 0.95;
+      document.getElementById('resumo-mensal').textContent = 'R$ ' + (ciclo === 'mensal' ? base.toFixed(2) : valorMensal.toFixed(2));
+      document.getElementById('resumo-anual').textContent = 'R$ ' + base.toFixed(2);
+      document.getElementById('resumo-pix').textContent = 'R$ ' + base.toFixed(2);
+
+      if (ciclo === 'anual' && parcelas > 1) {
+        var vp = (base / parcelas).toFixed(2);
+        document.getElementById('info-parcelas').textContent = parcelas + 'x de R$ ' + vp + ' (sem juros)';
+      } else {
+        document.getElementById('info-parcelas').textContent = '';
+      }
     }
 
     function aplicarCupom() {
@@ -94,17 +122,21 @@
     async function finalizar() {
       var token = localStorage.getItem('integra_token');
       if (!token) { alert('Faça login primeiro.'); return; }
-      var p = parseInt(document.getElementById('parcelas').value);
+      var ciclo = document.getElementById('ciclo').value;
+      var parcelas = parseInt(document.getElementById('parcelas').value) || 1;
       var cupom = document.getElementById('cupom').value.toUpperCase();
       var r = await fetch(`${CONFIG.API_URL}/financeiro/renovar-assinatura`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '', parcelas: p })
+        body: JSON.stringify({ plano: plano, tipo_ciclo: ciclo, parcelas: parcelas, codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '', pix: pixOff })
       });
       var d = await r.json();
       if (r.ok) { alert('✅ Assinatura ativada!'); window.location.href = 'boas-vindas.html'; }
       else { alert('Erro: ' + (d.erro || 'Tente novamente.')); }
     }
+
+    document.getElementById('ciclo').addEventListener('change', atualizarResumo);
+    atualizarResumo();
   </script>
 </body>
 </html>
