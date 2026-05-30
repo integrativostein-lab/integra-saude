@@ -6,7 +6,7 @@
   <title>Checkout — Integrativo.App</title>
   <link rel="stylesheet" href="css/estilo.css">
   <style>
-    .checkout-container { max-width: 650px; margin: 40px auto; padding: 0 20px; }
+    .checkout-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
     .checkout-card { background: var(--branco); padding: 36px; border-radius: var(--raio-borda); box-shadow: var(--sombra); margin-bottom: 20px; }
     .checkout-card h2 { margin-bottom: 8px; }
     .resumo { background: var(--cinza-claro); padding: 16px; border-radius: 8px; margin: 16px 0; font-size: 14px; }
@@ -14,13 +14,13 @@
     .cupom { margin: 16px 0; }
     .cupom input { padding: 10px; border: 2px solid #E2E8F0; border-radius: 8px; width: 60%; }
     .cupom button { padding: 10px 16px; background: var(--azul-escuro); color: #FFF; border: none; border-radius: 8px; cursor: pointer; }
-    .forma-pagamento { margin: 16px 0; }
-    .forma-pagamento label { display: block; margin-bottom: 8px; font-weight: 600; cursor: pointer; }
-    .btn-pix { background: #38A169; }
-    .btn-pix:hover { background: #2F855A; }
+    .desconto-pix { background: #C6F6D5; padding: 12px; border-radius: 8px; margin: 12px 0; font-size: 14px; color: #22543D; font-weight: 600; }
+    .parcelas-select { display: none; margin: 12px 0; }
+    .parcelas-select select { padding: 10px; border: 2px solid #E2E8F0; border-radius: 8px; width: 100%; }
   </style>
 </head>
 <body>
+  
   <nav class="navbar">
     <div class="logo">🌿 Integrativo<span>.</span>App</div>
     <div class="menu"><a href="index.html">Início</a> <a href="profissionais.html">Planos</a></div>
@@ -32,28 +32,28 @@
       <p style="color:var(--texto-medio);">Plano escolhido: <strong id="plano-nome">Pro</strong></p>
 
       <div class="resumo">
-        <p>Valor mensal: <span id="resumo-mensal">R$ 89,90</span></p>
-        <p id="linha-anual">Plano Anual: <span id="resumo-anual">R$ 863,04</span> <small style="color:var(--verde-suave);">(20% off)</small></p>
-        <p id="linha-pix" style="display:none;color:var(--verde-suave);">Pagamento via PIX: <span id="resumo-pix">5% off adicional</span></p>
+        <p>Ciclo: <strong id="resumo-ciclo">Mensal</strong></p>
+        <p>Valor base: <span id="resumo-valor-base">R$ 89,90</span></p>
+        <p id="resumo-desconto-pix" style="display:none;">Desconto PIX (5%): <span id="desconto-valor" style="color:#22543D;">-R$ 0,00</span></p>
+        <p>Valor final: <span id="resumo-valor-final" style="font-size:18px;font-weight:700;">R$ 89,90</span></p>
       </div>
 
       <div class="form-grupo">
-        <label>Ciclo</label>
-        <select id="ciclo" onchange="atualizarResumo()">
-          <option value="mensal">Mensal</option>
-          <option value="anual">Anual (20% off)</option>
+        <label>Forma de Pagamento</label>
+        <select id="forma-pagamento" onchange="atualizarResumo()">
+          <option value="cartao_credito">Cartão de Crédito</option>
+          <option value="pix">PIX (5% de desconto)</option>
         </select>
       </div>
 
-      <div class="form-grupo" id="grupo-parcelas" style="display:none;">
-        <label>Parcelas (até 4x sem juros)</label>
+      <div class="form-grupo parcelas-select" id="grupo-parcelas">
+        <label>Parcelas (sem juros)</label>
         <select id="parcelas" onchange="atualizarResumo()">
-          <option value="1">1x (à vista)</option>
+          <option value="1">1x</option>
           <option value="2">2x</option>
           <option value="3">3x</option>
           <option value="4">4x</option>
         </select>
-        <p id="info-parcelas" style="font-size:12px;color:var(--texto-medio);margin-top:4px;"></p>
       </div>
 
       <div class="cupom">
@@ -63,58 +63,90 @@
         <p id="msg-cupom" style="font-size:12px;margin-top:4px;"></p>
       </div>
 
-      <div class="forma-pagamento">
-        <label>Forma de Pagamento</label>
-        <label><input type="radio" name="pgto" value="pix" onchange="atualizarResumo()"> PIX (5% off adicional)</label>
-        <label><input type="radio" name="pgto" value="cartao" checked onchange="atualizarResumo()"> Cartão de Crédito</label>
+      <div class="form-grupo">
+        <label>☐ Sou associado ABRATH (15% off)</label>
+        <div id="grupo-abrath" style="display:none;">
+          <input type="text" id="abrath-registro" placeholder="Nº de registro ABRATH">
+          <input type="text" id="abrath-nome" placeholder="Nome completo" style="margin-top:8px;">
+          <button onclick="verificarABRATH()" style="margin-top:8px;">Confirmar</button>
+          <p id="msg-abrath" style="font-size:12px;margin-top:4px;"></p>
+        </div>
       </div>
 
       <button class="btn btn-primario" onclick="finalizar()" style="width:100%;margin-top:10px;">Finalizar Pagamento</button>
-      <p style="font-size:12px;color:var(--texto-medio);margin-top:8px;">🔒 Dados do cartão não são armazenados por nós.</p>
     </div>
   </div>
+
+  <footer style="text-align:center;padding:20px;font-size:12px;color:var(--texto-medio);">
+    <a href="manual.html">📖 Manual de Uso</a>
+  </footer>
 
   <script src="js/config.js"></script>
   <script>
     var plano = 'pro';
-    var valorMensal = CONFIG.PLANOS[plano].valor_mensal;
-    var valorAnual = CONFIG.PLANOS[plano].valor_anual;
-    var pixOff = false;
+    var ciclo = 'mensal';
+    var valorBase = CONFIG.PLANOS[plano].valor_mensal;
+    var descontoABRATH = false;
+
+    document.getElementById('resumo-valor-base').textContent = 'R$ ' + valorBase.toFixed(2).replace('.', ',');
+    document.getElementById('resumo-valor-final').textContent = 'R$ ' + valorBase.toFixed(2).replace('.', ',');
 
     function atualizarResumo() {
-      var ciclo = document.getElementById('ciclo').value;
-      var parcelas = parseInt(document.getElementById('parcelas').value) || 1;
-      var pgto = document.querySelector('input[name="pgto"]:checked').value;
-      pixOff = (pgto === 'pix');
+      var forma = document.getElementById('forma-pagamento').value;
+      var parcelas = parseInt(document.getElementById('parcelas').value);
+      var valorFinal = valorBase;
+      var desconto = 0;
 
-      document.getElementById('grupo-parcelas').style.display = ciclo === 'anual' ? 'block' : 'none';
-      document.getElementById('linha-pix').style.display = pixOff ? 'block' : 'none';
-      document.getElementById('linha-anual').style.display = ciclo === 'anual' ? 'block' : 'none';
-
-      var base = ciclo === 'anual' ? valorAnual : valorMensal;
-      if (pixOff) base = base * 0.95;
-      document.getElementById('resumo-mensal').textContent = 'R$ ' + (ciclo === 'mensal' ? base.toFixed(2) : valorMensal.toFixed(2));
-      document.getElementById('resumo-anual').textContent = 'R$ ' + base.toFixed(2);
-      document.getElementById('resumo-pix').textContent = 'R$ ' + base.toFixed(2);
-
-      if (ciclo === 'anual' && parcelas > 1) {
-        var vp = (base / parcelas).toFixed(2);
-        document.getElementById('info-parcelas').textContent = parcelas + 'x de R$ ' + vp + ' (sem juros)';
+      // Desconto PIX
+      if (forma === 'pix') {
+        desconto = valorBase * 0.05;
+        valorFinal = valorBase - desconto;
+        document.getElementById('resumo-desconto-pix').style.display = 'block';
+        document.getElementById('desconto-valor').textContent = '-R$ ' + desconto.toFixed(2).replace('.', ',');
+        document.getElementById('grupo-parcelas').style.display = 'none';
       } else {
-        document.getElementById('info-parcelas').textContent = '';
+        document.getElementById('resumo-desconto-pix').style.display = 'none';
+        document.getElementById('grupo-parcelas').style.display = 'block';
       }
+
+      document.getElementById('resumo-valor-final').textContent = 'R$ ' + valorFinal.toFixed(2).replace('.', ',');
     }
 
     function aplicarCupom() {
       var cod = document.getElementById('cupom').value.toUpperCase();
       var msg = document.getElementById('msg-cupom');
-      if (cod === 'PRESENTEDOMAU') {
+      if (cod === 'PRESENTEDOMAU' && plano === 'premium') {
         msg.textContent = '✅ Cupom aplicado! Acesso vitalício.';
         msg.style.color = 'var(--verde-suave)';
-        document.getElementById('resumo-mensal').textContent = 'R$ 0,00';
-        document.getElementById('resumo-anual').textContent = 'R$ 0,00 (vitalício)';
+        document.getElementById('resumo-valor-base').textContent = 'R$ 0,00';
+        document.getElementById('resumo-valor-final').textContent = 'R$ 0,00 (vitalício)';
       } else {
-        msg.textContent = '❌ Cupom inválido.';
+        msg.textContent = '❌ Cupom inválido para este plano.';
+        msg.style.color = 'var(--vermelho)';
+      }
+    }
+
+    function verificarABRATH() {
+      // Simulação da verificação ABRATH
+      var registro = document.getElementById('abrath-registro').value;
+      var nome = document.getElementById('abrath-nome').value;
+      var msg = document.getElementById('msg-abrath');
+
+      // No início do script, verificar se o plano é Coworking
+      if (plano === 'coworking') {
+    document.getElementById('grupo-abrath').style.display = 'none';
+}
+ 
+      
+      if (registro && nome) {
+        descontoABRATH = true;
+        msg.textContent = '✅ Registro ABRATH confirmado! 15% off aplicado.';
+        msg.style.color = 'var(--verde-suave)';
+        valorBase = valorBase * 0.85;
+        document.getElementById('resumo-valor-base').textContent = 'R$ ' + valorBase.toFixed(2).replace('.', ',');
+        atualizarResumo();
+      } else {
+        msg.textContent = '❌ Preencha todos os campos.';
         msg.style.color = 'var(--vermelho)';
       }
     }
@@ -122,21 +154,34 @@
     async function finalizar() {
       var token = localStorage.getItem('integra_token');
       if (!token) { alert('Faça login primeiro.'); return; }
-      var ciclo = document.getElementById('ciclo').value;
-      var parcelas = parseInt(document.getElementById('parcelas').value) || 1;
+      
+      var forma = document.getElementById('forma-pagamento').value;
+      var parcelas = parseInt(document.getElementById('parcelas').value);
       var cupom = document.getElementById('cupom').value.toUpperCase();
+      
+      var body = {
+        plano: plano,
+        tipo_ciclo: ciclo,
+        parcelas: forma === 'pix' ? 1 : parcelas,
+        codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '',
+        abrath_registro: descontoABRATH ? document.getElementById('abrath-registro').value : null,
+        abrath_nome: descontoABRATH ? document.getElementById('abrath-nome').value : null
+      };
+
       var r = await fetch(`${CONFIG.API_URL}/financeiro/renovar-assinatura`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ plano: plano, tipo_ciclo: ciclo, parcelas: parcelas, codigo_cupom: cupom === 'PRESENTEDOMAU' ? cupom : '', pix: pixOff })
+        body: JSON.stringify(body)
       });
+      
       var d = await r.json();
-      if (r.ok) { alert('✅ Assinatura ativada!'); window.location.href = 'boas-vindas.html'; }
-      else { alert('Erro: ' + (d.erro || 'Tente novamente.')); }
+      if (r.ok) { 
+        alert('✅ Assinatura ativada!'); 
+        window.location.href = 'boas-vindas.html'; 
+      } else { 
+        alert('Erro: ' + (d.erro || 'Tente novamente.')); 
+      }
     }
-
-    document.getElementById('ciclo').addEventListener('change', atualizarResumo);
-    atualizarResumo();
   </script>
 </body>
 </html>

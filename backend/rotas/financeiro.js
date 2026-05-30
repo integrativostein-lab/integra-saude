@@ -12,22 +12,31 @@ function autenticar(req, res, next) {
 }
 
 // Parcelamento: até 4x sem juros para anual, até 3x para semestral
-function calcularParcelas(valorTotal, numParcelas) {
+function calcularParcelas(valorTotal, numParcelas, formaPagamento) {
+  // Aplica 5% de desconto para PIX
+  if (formaPagamento === 'pix') {
+    valorTotal = valorTotal * 0.95;
+  }
+
   if (numParcelas < 1) numParcelas = 1;
   const valorParcela = valorTotal / numParcelas;
-  return { parcelas: numParcelas, valorParcela: parseFloat(valorParcela.toFixed(2)), valorTotal, juros: 0 };
+  return { 
+    parcelas: numParcelas, 
+    valorParcela: parseFloat(valorParcela.toFixed(2)), 
+    valorTotal: parseFloat(valorTotal.toFixed(2)), 
+    juros: 0,
+    desconto_pix: formaPagamento === 'pix' ? '5%' : '0%'
+  };
 }
 
 // Registrar pagamento de consulta
 router.post('/pagar', autenticar, async (req, res) => {
   const { agendamento_id, valor, forma_pagamento, parcelas } = req.body;
   
-  // Aplicar 5% off para PIX
+  // Aplica desconto PIX se for o caso
   let valorFinal = valor;
-  let desconto = 0;
-  if (forma_pagamento === 'pix') {
-    desconto = valor * 0.05;
-    valorFinal = valor - desconto;
+    if (forma_pagamento === 'pix') {
+    valorFinal = valor * 0.95;
   }
 
   const r = await db.query(
@@ -35,7 +44,13 @@ router.post('/pagar', autenticar, async (req, res) => {
     [req.usuario.id, agendamento_id, valorFinal, forma_pagamento, parcelas || 1]
   );
   await db.query("UPDATE agendamentos SET pago = 1, status = 'confirmado' WHERE id = $1", [agendamento_id]);
-  res.json({ mensagem: 'Pagamento aprovado!', valor_original: valor, desconto_pix: desconto, valor_final: valorFinal, id: r.rows[0].id });
+  res.json({ 
+    mensagem: 'Pagamento aprovado!', 
+    id: r.rows[0].id,
+    valor_original: valor,
+    valor_final: valorFinal,
+    desconto: forma_pagamento === 'pix' ? '5%' : '0%'
+  });
 });
 
 // Listar pagamentos do usuário

@@ -1,4 +1,5 @@
 require('dotenv').config();
+const formulariosRoutes = require('./rotas/formularios');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -65,6 +66,7 @@ const entidadesRoutes = require('./rotas/entidades');
 // ============================================
 
 app.use('/api/auth', authRoutes);
+app.use('/api/formularios', formulariosRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/agendamentos', agendamentoRoutes);
 app.use('/api/profissionais', profissionalRoutes);
